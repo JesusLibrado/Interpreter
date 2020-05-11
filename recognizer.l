@@ -26,6 +26,7 @@ alphanumeric [A-Za-z0-9]
 "ifelse"						{printf("Terminal: %s\n", yytext);return IFELSE_TOKEN;}
 "while"							{printf("Terminal: %s\n", yytext);return WHILE_TOKEN;}
 "for"							{printf("Terminal: %s\n", yytext);return FOR_TOKEN;}
+"step"							{printf("Terminal: %s\n", yytext);return STEP_TOKEN;}
 "to"							{printf("Terminal: %s\n", yytext);return TO_TOKEN;}
 "do"							{printf("Terminal: %s\n", yytext);return DO_TOKEN;}
 "+"								{printf("Terminal: %s\n", yytext);return ADDITION_TOKEN;}
