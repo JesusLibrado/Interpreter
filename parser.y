@@ -1,6 +1,7 @@
 /********* PROLOGUE *********/
 %{
     #include <stdio.h>
+    #include "symbol_table.h"
     int yylex(void);
     void yyerror(char *);
 %}
@@ -11,7 +12,7 @@
     //int type_integer;
     //float type_float;
     float number;
-    char id[50];
+    char id[20];
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN 

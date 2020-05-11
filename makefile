@@ -17,7 +17,7 @@ bison: lex.yy.c parser.y
 	@echo Compiling bison file
 	@ ${BISON} -dv parser.y
 
-C: lex.yy.c parser.tab.c 
+C: lex.yy.c parser.tab.c
 	@echo Compiling c file
 	@ ${CC} -o parser parser.tab.c lex.yy.c -lfl
 

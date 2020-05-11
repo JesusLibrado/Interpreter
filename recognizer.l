@@ -10,7 +10,6 @@
 /******* CONSTANTS *******/
 digit [0-9]
 alpha [a-zA-Z]
-alphanumeric [A-Za-z0-9]
 
 /********* RULES *********/
 %%
