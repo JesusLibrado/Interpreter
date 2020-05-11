@@ -2,15 +2,25 @@
 
 Homework #4 from Compilers Design course. Given a Context Free grammar program a syntax recognizer implementing a symbols table using Bison, Yacc, Flex and C.
 
-## Compile and run 
+## Compile
 
-To *compile*, just type the _make_ command in the bash.
+To **compile**, just type the _make_ command in the bash.
 
 ```bash
 make
 ```
 
-To *run* tests, type _make *<TEST_NUMBER>*_ in the bash.
+If it is **not possible**, enter the next instructions in the bash:
+
+```bash
+lex -l recognizer.l
+bison -dv parser.y
+gcc -o parser parser.tab.c lex.yy.c -lfl
+```
+
+## Execute
+
+To **run** tests, type _make *<TEST_NUMBER>*_ in the bash.
 
 * TEST_NUMBER = {one, two, three, four,  ... , eight}
 
@@ -18,6 +28,12 @@ To *run* tests, type _make *<TEST_NUMBER>*_ in the bash.
 
 ```bash
 make one
+```
+
+If it is **not possible**, enter the next instructions in the bash:
+
+```bash
+./parser < tests/_<TEST_NUMBER>_.txt
 ```
 
 ## Contex Free Grammar
