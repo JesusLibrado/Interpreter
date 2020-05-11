@@ -108,3 +108,12 @@ expression:
 
 
 /********* EPILOGUE *********/
+
+void yyerror(char *s) {
+    fprintf(stdout, "%s\n", s);
+}
+
+int main(void) {
+    yyparse();
+    return 0;
+}
