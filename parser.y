@@ -18,17 +18,19 @@
 %token SET_TOKEN VAR_TOKEN INT_TOKEN FLOAT_TOKEN
 %token ADDITION_TOKEN SUBSTRACTION_TOKEN MULTIPLICATION_TOKEN DIVISION_TOKEN
 %token EQUAL_TOKEN LT_TOKEN GT_TOKEN LTE_TOKEN GTE_TOKEN
-%token OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET OPEN_PARENTHESIS CLOSE_PARENTHESIS SEMI_COLON_TOKEN
+%token OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET OPEN_PARENTHESIS CLOSE_PARENTHESIS SEMI_COLON_TOKEN COLON_TOKEN
 
 %token<number> INTEGER FLOAT
-%token <id> IDENTIFIER
+%token<id> IDENTIFIER
 
 
 /********* GRAMMAR RULES *********/
 
+%start prog
+
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER '{' opt_decls '}' stmt;
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt;
 
 opt_decls: 
     decls
@@ -36,13 +38,16 @@ opt_decls:
 ;
 
 decls: 
-    decls SEMI_COLON_TOKEN decls 
+    dec SEMI_COLON_TOKEN decls 
     | dec
 ;
 
 dec: VAR_TOKEN IDENTIFIER ':' tipo;
 
-tipo: INT_TOKEN | FLOAT_TOKEN;
+tipo: 
+    INT_TOKEN 
+    | FLOAT_TOKEN
+;
 
 stmt: 
     assign_stmt
@@ -52,24 +57,24 @@ stmt:
 ;
 
 assign_stmt:
-    SET_TOKEN IDENTIFIER expr ';'
+    SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN
     | READ_TOKEN IDENTIFIER
     | PRINT_TOKEN expr
 ;
 
 if_stmt: 
-    IF_TOKEN '(' expression ')' stmt
-    | IFELSE_TOKEN '(' expression ')' stmt stmt
+    IF_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
+    | IFELSE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt stmt
 ;
 
 iter_stmt: 
-    WHILE_TOKEN '(' expression ')' stmt
+    WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
     | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expr STEP_TOKEN expr DO_TOKEN stmt
 ;
 
 cmp_stmt: 
-    '{' '}'
-    | '{' stmt_lst '}'
+    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET
+    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET
 ;
 
 stmt_lst: 
@@ -90,7 +95,7 @@ term:
 ;
 
 factor: 
-    '(' expr ')'
+    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS
     | IDENTIFIER 
     | INTEGER 
     | FLOAT
