@@ -1,0 +1,6 @@
+program four
+{
+  var x : int
+}
+
+   read x;

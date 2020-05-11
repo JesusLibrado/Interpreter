@@ -46,6 +46,4 @@ void syntaxError(){
     printf("Syntax error (text=%s) at line: %d\n", yytext, yylineno);
 }
 
-int yywrap(void) {
-    return 1;
-}
+int yywrap(void) {}
