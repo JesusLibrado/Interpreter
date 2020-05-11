@@ -9,22 +9,24 @@
 /********* DECLARATIONS *********/
 
 %union{
-    //int type_integer;
-    //float type_float;
-    float number;
+    int var_type;
+    int int_val;
+    float float_val;
     char id[20];
 }
 
-%token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN 
+%token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
 %token IF_TOKEN IFELSE_TOKEN WHILE_TOKEN FOR_TOKEN TO_TOKEN DO_TOKEN STEP_TOKEN
 %token SET_TOKEN VAR_TOKEN INT_TOKEN FLOAT_TOKEN
 %token ADDITION_TOKEN SUBSTRACTION_TOKEN MULTIPLICATION_TOKEN DIVISION_TOKEN
 %token EQUAL_TOKEN LT_TOKEN GT_TOKEN LTE_TOKEN GTE_TOKEN
 %token OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET OPEN_PARENTHESIS CLOSE_PARENTHESIS SEMI_COLON_TOKEN COLON_TOKEN
 
-%token<number> INTEGER FLOAT
+%token<int_val> INTEGER
+%token<float_val> FLOAT
 %token<id> IDENTIFIER
 
+%type<var_type> tipo
 
 /********* GRAMMAR RULES *********/
 
@@ -44,11 +46,16 @@ decls:
     | dec
 ;
 
-dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {declare($2);};
+dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
+    if(!is_declared($2))
+        declare_var($2, $4);
+    else
+        printf("Variable was already declared\n");
+};
 
 tipo: 
-    INT_TOKEN 
-    | FLOAT_TOKEN
+    INT_TOKEN       {$$ = 1;}
+    | FLOAT_TOKEN   {$$ = 2;}
 ;
 
 stmt: 
@@ -125,7 +132,7 @@ int main(int argc, char **argv) {
 	    freopen(argv[1], "r", stdin);
 	}
     yyparse();
-    print_table();
+    //print_table();
     free_table();
     return 0;
 }

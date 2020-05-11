@@ -48,8 +48,8 @@ alpha [a-zA-Z]
 
 {alpha}+                        {sscanf(yytext, "%s", yylval.id); /*printf("Identifier: %s\n", yytext);*/ return IDENTIFIER;}
 
-{digit}+                        {yylval.number = atoi(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
-{digit}+.{digit}+               {yylval.number = atoi(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
+{digit}+                        {yylval.int_val = atoi(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
+{digit}+.{digit}+               {yylval.float_val = atoi(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
 
 
 %%
