@@ -11,7 +11,7 @@
     //int type_integer;
     //float type_float;
     float number;
-    char * id;
+    char id[50];
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN 
@@ -43,7 +43,7 @@ decls:
     | dec
 ;
 
-dec: VAR_TOKEN IDENTIFIER ':' tipo;
+dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo;
 
 tipo: 
     INT_TOKEN 

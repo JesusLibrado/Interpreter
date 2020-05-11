@@ -47,10 +47,10 @@ alphanumeric [A-Za-z0-9]
 ";"                             {printf("Terminal: %s\n", yytext);return SEMI_COLON_TOKEN;}	
 ":"                             {printf("Terminal: %s\n", yytext);return COLON_TOKEN;}	
 
-{alpha}+{alphanumeric}*         {sscanf(yytext, "%s", yylval.id); printf("Identifier: %s\n", yytext); return IDENTIFIER;}
+{alpha}+                        {sscanf(yytext, "%s", yylval.id); printf("Identifier: %s\n", yytext); return IDENTIFIER;}
 
 {digit}+                        {yylval.number = atoi(yytext); printf("Integer: %s\n", yytext); return INTEGER;}
-{digit}+"."{digit}+             {yylval.number = atoi(yytext); printf("Float: %s\n", yytext); return FLOAT;}
+{digit}+.{digit}+               {yylval.number = atoi(yytext); printf("Float: %s\n", yytext); return FLOAT;}
 
 
 %%

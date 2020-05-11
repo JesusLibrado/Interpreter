@@ -33,7 +33,7 @@ make one
 If it is **not possible**, enter the next instructions in the bash:
 
 ```bash
-./parser < tests/_<TEST_NUMBER>_.txt
+./parser < tests/one.txt
 ```
 
 ## Contex Free Grammar
