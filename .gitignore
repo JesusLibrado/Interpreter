@@ -3,6 +3,6 @@ parser.out
 parser.tab.c
 parser.tab.h
 parser.output
-parser
+parser.o
 
 .vscode
