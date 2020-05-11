@@ -15,6 +15,8 @@ alphanumeric [A-Za-z0-9]
 /********* RULES *********/
 %%
 
+[[:space:]]+
+
 "program"						{printf("Terminal: %s\n", yytext);return PROGRAM_TOKEN;}
 "set"							{printf("Terminal: %s\n", yytext);return SET_TOKEN;}
 "var"							{printf("Terminal: %s\n", yytext);return VAR_TOKEN;}
