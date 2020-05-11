@@ -1,5 +1,5 @@
 lex.yy.c
-parser.output
+parser.out
 parser.tab.c
 parser.tab.h
-parser
+parser.output
