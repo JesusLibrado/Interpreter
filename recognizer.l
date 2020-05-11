@@ -49,7 +49,6 @@ alphanumeric [A-Za-z0-9]
 {digit}+                        {yylval.number = atoi(yytext); return INTEGER;}
 {digit}+"."{digit}+             {yylval.number = atoi(yytext); return FLOAT;}
 
-.                               {syntaxError(); return OTHER;}
 
 %%
 
