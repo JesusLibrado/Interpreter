@@ -44,7 +44,7 @@ decls:
     | dec
 ;
 
-dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo;
+dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {declare($2);};
 
 tipo: 
     INT_TOKEN 
@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
 	    freopen(argv[1], "r", stdin);
 	}
     yyparse();
-    insert_table("hello");
     print_table();
+    free_table();
     return 0;
 }
