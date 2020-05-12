@@ -48,7 +48,6 @@ void declare_var(struct node **head_ref, char id[20], int var_type) {
     new_symbol->type = var_type;
     new_symbol->next = (*head_ref);
 
-    printf("DECLARE: %s\n", id);
     (*head_ref) = new_symbol;
 }
 

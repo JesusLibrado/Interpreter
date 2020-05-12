@@ -73,10 +73,9 @@ assign_stmt:
             assign_value(&head, $2, $3);
         } else 
             printf("Assignation error!: %s does not exist\n", $2);
-        print_table(head);
     }
-    | READ_TOKEN IDENTIFIER
-    | PRINT_TOKEN expr
+    | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN
+    | PRINT_TOKEN expr SEMI_COLON_TOKEN
 ;
 
 if_stmt: 
@@ -113,7 +112,7 @@ term:
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
-    | IDENTIFIER                            {$$ = 'x';}
+    | IDENTIFIER                            {$$ = get_value(head, $1);}
     | INTEGER                               {$$ = $1;}
     | FLOAT                                 {$$ = $1;}
 ;
@@ -140,6 +139,8 @@ int main(int argc, char **argv) {
 	    freopen(argv[1], "r", stdin);
 	}
     yyparse();
+    print_table(head);
+    
     //free_table();
     return 0;
 }

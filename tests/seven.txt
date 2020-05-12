@@ -16,7 +16,7 @@ program seven
    }
 
    set z 0;
-   while (x < y) do
+   while (x < y)
    {
      set z z + y;
      set x x + 1
