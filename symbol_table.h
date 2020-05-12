@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include<time.h> 
 #include <string.h>
 
 struct node {
@@ -66,16 +67,16 @@ void assign_value(struct node *head_ref, char id[20], float value) {
         printf("Declaration error!: %s was not declared\n", id);
         return;
     }
+    printf("Assign %s %.2f\n", id, value);
     p->value = value;
 }  
 
 
 void read_user_input(struct node *head, char *id){
-    float var_float;
-    printf("Enter %s: ", id);
-    scanf("%f", &var_float);
-    assign_value(head, id, var_float);
-    printf("\n");
+    srand(time(0)); 
+    int rand1 = rand()%50;
+    printf("Read %s: %d\n", id, rand1);
+    assign_value(head, id, (float)rand1);
 }
 
 // void free_table(){

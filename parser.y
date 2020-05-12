@@ -80,7 +80,7 @@ assign_stmt:
         read_user_input(head, $2);
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
-        printf("Print: %.2f\n", $2);
+        printf("Print %.2f\n", $2);
     }
 ;
 
