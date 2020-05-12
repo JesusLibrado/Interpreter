@@ -1,6 +1,6 @@
 # Parser
 
-Homework #4 from Compilers Design course. Given a Context Free grammar program a syntax recognizer implementing a symbols table using Bison, Yacc, Flex and C.
+Homework #4 from Compilers Design course. Given a [Context Free grammar](#context-free-grammar) program a syntax recognizer implementing a symbols table using Bison, Yacc, Flex and C.
 
 ## Compile
 
