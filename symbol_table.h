@@ -10,22 +10,20 @@ struct node {
 } typedef Symbol;
 
 void print_table(struct node *head){
-    if(head == NULL) {
-        printf("null\n");
-    } else {
+    printf("\tvariable  |\ttype \t|\tvalue\n");
+    while(head != NULL) {
         if(head->type == 1){
-            printf("%s: int ", head->identifier);
+            printf("\t%s \t\tint \t", head->identifier);
             if(head->value)
-                printf(" = %d ", (int)head->value);
+                printf(" \t%d ", (int)head->value);
         }else {
-            printf("%s: float ", head->identifier);
+            printf("\t%s \t\tfloat \t", head->identifier);
             if(head->value)
-                printf(" = %.2f ", head->value);
+                printf(" \t%.2f ", head->value);
         }
-        printf("-> ");
-        print_table(head->next);
+        printf("\n");
+        head = head->next;
     }
-    
 }
 
 struct node * find(struct node *head, char id[20]) {
@@ -79,9 +77,9 @@ void read_user_input(struct node *head, char *id){
     assign_value(head, id, (float)rand1);
 }
 
-// void free_table(){
-//     while(head != NULL){
-//         free(head);
-//         head = head->next;
-//     }
-// }
+void free_table(struct node **head){
+    while((*head) != NULL){
+        free((*head));
+        (*head) = (*head)->next;
+    }
+}
