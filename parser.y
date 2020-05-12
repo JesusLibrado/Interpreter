@@ -13,6 +13,7 @@
 
 %union{
     int var_type;
+    int boolean; // 1: true | 0: false
     float number;
     char *id;
 }
@@ -29,6 +30,7 @@
 
 %type<var_type> tipo
 %type<number> factor expr term
+%type<boolean> expression
 
 /********* GRAMMAR RULES *********/
 
@@ -70,12 +72,16 @@ stmt:
 assign_stmt:
     SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
         if(find(head, $2)){
-            assign_value(&head, $2, $3);
+            assign_value(head, $2, $3);
         } else 
             printf("Assignation error!: %s does not exist\n", $2);
     }
-    | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN
-    | PRINT_TOKEN expr SEMI_COLON_TOKEN
+    | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
+        read_user_input(head, $2);
+    }
+    | PRINT_TOKEN expr SEMI_COLON_TOKEN {
+        printf("Print: %.2f\n", $2);
+    }
 ;
 
 if_stmt: 
@@ -118,11 +124,11 @@ factor:
 ;
 
 expression: 
-    expr LT_TOKEN expr
-    | expr GT_TOKEN expr
-    | expr EQUAL_TOKEN expr
-    | expr LTE_TOKEN expr
-    | expr GTE_TOKEN expr
+    expr LT_TOKEN expr          {$$ = ($1 < $3);}
+    | expr GT_TOKEN expr        {$$ = ($1 > $3);}
+    | expr EQUAL_TOKEN expr     {$$ = ($1 == $3);}
+    | expr LTE_TOKEN expr       {$$ = ($1 <= $3);}
+    | expr GTE_TOKEN expr       {$$ = ($1 >= $3);}
 ;
 
 %%

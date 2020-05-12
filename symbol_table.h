@@ -41,6 +41,15 @@ float get_value(struct node *head, char id[20]) {
     return p->value;
 }
 
+int get_type(struct node *head, char *id) {
+    struct node *p = find(head, id);
+    if(!p){
+        printf("Declaration error!: %s was not declared\n", id);
+        return 0; // doesn't exist
+    }
+    return p->type;
+}
+
 void declare_var(struct node **head_ref, char id[20], int var_type) {
     struct node * new_symbol = (struct node *)malloc(sizeof(struct node));
 
@@ -51,14 +60,23 @@ void declare_var(struct node **head_ref, char id[20], int var_type) {
     (*head_ref) = new_symbol;
 }
 
-void assign_value(struct node **head_ref, char id[20], float value) {
-    struct node *p = find(*head_ref, id);
+void assign_value(struct node *head_ref, char id[20], float value) {
+    struct node *p = find(head_ref, id);
     if(!p){
         printf("Declaration error!: %s was not declared\n", id);
         return;
     }
     p->value = value;
-}   
+}  
+
+
+void read_user_input(struct node *head, char *id){
+    float var_float;
+    printf("Enter %s: ", id);
+    scanf("%f", &var_float);
+    assign_value(head, id, var_float);
+    printf("\n");
+}
 
 // void free_table(){
 //     while(head != NULL){

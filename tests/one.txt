@@ -6,5 +6,5 @@ program one
 {  
    set x 1;
    set y 2.0;
-   print x / y
+   print x / y;
 }  
