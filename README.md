@@ -39,7 +39,7 @@ If it is **not possible**, enter the next instructions in the bash:
 
 ## Input
 
-A text file with an example of any code under the Context Free Grammar given.
+A text file with an example of any code under the [Context Free Grammar](#context-free-grammar) given.
 
 ## Output example
 
@@ -62,7 +62,7 @@ syntax error
 
 ```
 
-## Contex Free Grammar
+## Context Free Grammar
 
 ![](cfg.png)
 
