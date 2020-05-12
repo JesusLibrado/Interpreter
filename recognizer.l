@@ -46,10 +46,10 @@ alpha [a-zA-Z]
 ";"                             {/*printf("Terminal: %s\n", yytext);*/return SEMI_COLON_TOKEN;}	
 ":"                             {/*printf("Terminal: %s\n", yytext);*/return COLON_TOKEN;}	
 
-{alpha}+                        {sscanf(yytext, "%s", yylval.id); /*printf("Identifier: %s\n", yytext);*/ return IDENTIFIER;}
+{alpha}+                        {yylval.id = strdup(yytext); /*printf("Identifier: %s\n", yytext);*/ return IDENTIFIER;}
 
-{digit}+                        {yylval.int_val = atoi(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
-{digit}+.{digit}+               {yylval.float_val = atoi(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
+{digit}+                        {yylval.number = atof(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
+{digit}+.{digit}+               {yylval.number = atof(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
 
 
 %%

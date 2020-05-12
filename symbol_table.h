@@ -2,52 +2,64 @@
 #include <string.h>
 
 struct node {
-    void *value;
+    float value;
     int type; // int:1 | float:2
     char *identifier;
     struct node *next;
 } typedef Symbol;
 
 void print_table(struct node *head){
-    printf("\n[");
-    while(head != NULL){
-        printf("%s: %s ", head->identifier, (head->type==1)?"int":"float");
+    if(head == NULL) {
+        printf("null\n");
+    } else {
+        if(head->type == 1){
+            printf("%s: int ", head->identifier);
+            if(head->value)
+                printf(" = %d ", (int)head->value);
+        }else {
+            printf("%s: float ", head->identifier);
+            if(head->value)
+                printf(" = %.2f ", head->value);
+        }
         printf("-> ");
-        head = head->next;
+        print_table(head->next);
     }
-    //printf("%s: %s ", head->identifier, (head->type==1)?"int":"float");
-    printf("null ]\n");
+    
 }
 
-void declare_var(struct node **head_ref, char *id, int var_type) {
+struct node * find(struct node *head, char id[20]) {
+    if(head == NULL) return NULL;
+    if(strcmp(head->identifier, id) == 0) return head;
+    return find(head->next, id);
+}
+
+float get_value(struct node *head, char id[20]) {
+    struct node *p = find(head, id);
+    if(!p){
+        printf("Declaration error!: %s was not declared\n", id);
+    }
+    return p->value;
+}
+
+void declare_var(struct node **head_ref, char id[20], int var_type) {
     struct node * new_symbol = (struct node *)malloc(sizeof(struct node));
 
     new_symbol->identifier = id;
     new_symbol->type = var_type;
     new_symbol->next = (*head_ref);
 
+    printf("DECLARE: %s\n", id);
     (*head_ref) = new_symbol;
 }
 
-// void assign_value(char *id, void *var_value, size_t data_size) {
-//     Symbol *p = head;
-//     while(p != NULL && strcmp(p->identifier, id) != 0){
-//         p = p->next;
-//     }
-//     if(p!=NULL){
-//         int i; 
-//         for (i=0; i<data_size; i++) {   
-//             //printf("%c ", (char)(var_value + i));
-//             *(char *)(p->value + i) = *(char *)(var_value + i);
-//         }
-//     }
-// }   
-
-struct node * find(struct node *head, char *id) {
-    if(head == NULL) return NULL;
-    if(strcmp(head->identifier, id) == 0) return head;
-    return find(head->next, id);
-}
+void assign_value(struct node **head_ref, char id[20], float value) {
+    struct node *p = find(*head_ref, id);
+    if(!p){
+        printf("Declaration error!: %s was not declared\n", id);
+        return;
+    }
+    p->value = value;
+}   
 
 // void free_table(){
 //     while(head != NULL){

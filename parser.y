@@ -13,9 +13,8 @@
 
 %union{
     int var_type;
-    int int_val;
-    float float_val;
-    char id[20];
+    float number;
+    char *id;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -25,11 +24,11 @@
 %token EQUAL_TOKEN LT_TOKEN GT_TOKEN LTE_TOKEN GTE_TOKEN
 %token OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET OPEN_PARENTHESIS CLOSE_PARENTHESIS SEMI_COLON_TOKEN COLON_TOKEN
 
-%token<int_val> INTEGER
-%token<float_val> FLOAT
+%token<number> INTEGER FLOAT
 %token<id> IDENTIFIER
 
 %type<var_type> tipo
+%type<number> factor expr term
 
 /********* GRAMMAR RULES *********/
 
@@ -54,7 +53,6 @@ dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
         declare_var(&head, $2, $4);
     }else 
         printf("Declaration error!: %s was already declared\n", $2);
-    print_table(head); 
 };
 
 tipo: 
@@ -71,6 +69,11 @@ stmt:
 
 assign_stmt:
     SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
+        if(find(head, $2)){
+            assign_value(&head, $2, $3);
+        } else 
+            printf("Assignation error!: %s does not exist\n", $2);
+        print_table(head);
     }
     | READ_TOKEN IDENTIFIER
     | PRINT_TOKEN expr
@@ -97,22 +100,22 @@ stmt_lst:
 ;
 
 expr: 
-    expr ADDITION_TOKEN term
-    | expr SUBSTRACTION_TOKEN term
-    | term
+    expr ADDITION_TOKEN term        {$$ = $1 + $3;}
+    | expr SUBSTRACTION_TOKEN term  {$$ = $1 - $3;}
+    | term                          {$$ = $1;}
 ;
 
 term:
-    term MULTIPLICATION_TOKEN factor
-    | term DIVISION_TOKEN factor
-    | factor
+    term MULTIPLICATION_TOKEN factor    {$$ = $1 * $3;}
+    | term DIVISION_TOKEN factor        {$$ = $1 / $3;}
+    | factor                            {$$ = $1;}
 ;
 
 factor: 
-    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS
-    | IDENTIFIER 
-    | INTEGER 
-    | FLOAT
+    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
+    | IDENTIFIER                            {$$ = 'x';}
+    | INTEGER                               {$$ = $1;}
+    | FLOAT                                 {$$ = $1;}
 ;
 
 expression: 
