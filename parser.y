@@ -4,6 +4,9 @@
     #include "symbol_table.h"
     int yylex(void);
     void yyerror(char *);
+
+    struct node *head = NULL;
+
 %}
 
 /********* DECLARATIONS *********/
@@ -47,10 +50,11 @@ decls:
 ;
 
 dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
-    if(!is_declared($2))
-        declare_var($2, $4);
-    else
-        printf("Variable was already declared\n");
+    if(!find(head, $2)){
+        declare_var(&head, $2, $4);
+    }else 
+        printf("Declaration error!: %s was already declared\n", $2);
+    print_table(head); 
 };
 
 tipo: 
@@ -66,7 +70,8 @@ stmt:
 ;
 
 assign_stmt:
-    SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN
+    SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
+    }
     | READ_TOKEN IDENTIFIER
     | PRINT_TOKEN expr
 ;
@@ -132,7 +137,6 @@ int main(int argc, char **argv) {
 	    freopen(argv[1], "r", stdin);
 	}
     yyparse();
-    //print_table();
-    free_table();
+    //free_table();
     return 0;
 }
