@@ -19,7 +19,7 @@ program seven
    while (x < y)
    {
      set z z + y;
-     set x x + 1
+     set x x + 1;
    }
 
    ifelse (x < 2*y + 2)

@@ -12,7 +12,7 @@ program five
    {
      set z x;
      set x y;
-     set y z;
+     set y k;
    }
 
    set z 0;

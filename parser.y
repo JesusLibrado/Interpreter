@@ -54,7 +54,7 @@ dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
     if(!find(head, $2)){
         declare_var(&head, $2, $4);
     }else 
-        printf("Declaration error!: %s was already declared\n", $2);
+        printf("Declaration error!: %s is a variable\n", $2);
 };
 
 tipo: 

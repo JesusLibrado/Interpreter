@@ -38,6 +38,7 @@ float get_value(struct node *head, char id[20]) {
     struct node *p = find(head, id);
     if(!p){
         printf("Declaration error!: %s was not declared\n", id);
+        return 0; // default value
     }
     return p->value;
 }
@@ -64,11 +65,10 @@ void declare_var(struct node **head_ref, char id[20], int var_type) {
 void assign_value(struct node *head_ref, char id[20], float value) {
     struct node *p = find(head_ref, id);
     if(!p){
-        printf("Declaration error!: %s was not declared\n", id);
-        return;
+        printf("Declaration error! %s is not a variable(DEFAULT: 0)\n", id);
+    }else {
+        p->value = value;
     }
-    printf("Assign %s %.2f\n", id, value);
-    p->value = value;
 }  
 
 

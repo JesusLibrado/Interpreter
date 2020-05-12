@@ -22,5 +22,5 @@ program three
      set x x + 1;
    }
 
-   print z;
+   print z + y + x;
 }
