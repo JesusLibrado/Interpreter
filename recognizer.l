@@ -1,10 +1,12 @@
 %{
     #include <stdlib.h>
     #include <string.h>
-    #include "parser.tab.h"
     #include "value.h"
+    #include "parser.tab.h"
 
-    
+    int integer_value(int);
+    int float_value(int);
+    int identifier_value(int);
 
 %}
 
@@ -47,12 +49,25 @@ alpha [a-zA-Z]
 ";"                             {return SEMI_COLON_TOKEN;}	
 ":"                             {return COLON_TOKEN;}	
 
-{alpha}+                        {yylval.id = strdup(yytext); /*printf("Identifier: %s\n", yytext);*/ return IDENTIFIER;}
+{alpha}+                        {return identifier_value(IDENTIFIER);}
 
-{digit}+                        {yylval.number = atof(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
-{digit}+.{digit}+               {yylval.number = atof(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
+{digit}+                        {return integer_value(INTEGER);}
+{digit}+.{digit}+               {return float_value(FLOAT);}
 
 
 %%
+
+int integer_value(int token) {
+    yylval.value = getInteger(atoi(yytext));
+    return token;
+}
+int float_value(int token) {
+    yylval.value = getFloat(atof(yytext));
+    return token;
+}
+int identifier_value(int token) {
+    yylval.identifier = strdup(yytext);
+    return token;
+}
 
 int yywrap(void) {}

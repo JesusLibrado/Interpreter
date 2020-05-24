@@ -1,12 +1,17 @@
 /********* PROLOGUE *********/
 %{
     #include <stdio.h>
-    #include "symbol_table.h"
+    #include <stdbool.h>
     #include "value.h"
+    #include "symbol_table.h"
     int yylex(void);
     void yyerror(char *);
 
     struct tableNode *head = NULL;
+
+    void variable_declaration_error(char *id);
+    void variable_input_error(char *id);
+    void variable_operation_mismatch(char *id);
 
 %}
 
@@ -14,10 +19,9 @@
 
 %union{
     int var_type;
-    int boolean; // 1: true | 0: false
-    float number;
-    char *id;
-    struct variable * value;
+    bool boolean;
+    char *identifier;
+    struct variableValue* value;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -27,11 +31,10 @@
 %token EQUAL_TOKEN LT_TOKEN GT_TOKEN LTE_TOKEN GTE_TOKEN
 %token OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET OPEN_PARENTHESIS CLOSE_PARENTHESIS SEMI_COLON_TOKEN COLON_TOKEN
 
-%token<number> INTEGER FLOAT
-%token<id> IDENTIFIER
+%token<value> INTEGER FLOAT
+%token<identifier> IDENTIFIER
 
-%type<var_type> tipo
-%type<number> factor expr term
+%type<value> factor expr term tipo
 %type<boolean> expression
 
 /********* GRAMMAR RULES *********/
@@ -53,15 +56,17 @@ decls:
 ;
 
 dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
-    if(!find(head, $2)){
-        declareVariable(&head, $2, $4);
-    }else 
-        printf("Declaration error!: %s is a variable\n", $2);
+    if(!variableHasBeenDeclared(head, $2)){
+        declareVariable(&head, $2, $4); 
+    }else {
+        variable_declaration_error($2);
+        YYERROR;
+    }
 };
 
 tipo: 
-    INT_TOKEN       {$$ = 1;}
-    | FLOAT_TOKEN   {$$ = 2;}
+    INT_TOKEN       {$$ = getInteger(0);}
+    | FLOAT_TOKEN   {$$ = getFloat(0.0);}
 ;
 
 stmt: 
@@ -73,16 +78,22 @@ stmt:
 
 assign_stmt:
     SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
-        if(find(head, $2)){
-            assignSymbolValue(head, $2, $3);
-        } else 
-            printf("Assignation error!: %s does not exist\n", $2);
+        if(!variableHasBeenDeclared(head, $2)){
+            variable_declaration_error($2);
+            YYERROR;
+        } 
+        if(!setVariableValue(head, $2, $3)){
+            variable_input_error($2);
+            YYERROR;
+        }
+        
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
-        //read_user_input(head, $2);
+        printf("Reading something\n");
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
-        printf("Print %.2f\n", $2);
+        printValue($2);
+        printf("\n");
     }
 ;
 
@@ -107,36 +118,45 @@ stmt_lst:
 ;
 
 expr: 
-    expr ADDITION_TOKEN term        {$$ = $1 + $3;}
-    | expr SUBSTRACTION_TOKEN term  {$$ = $1 - $3;}
+    expr ADDITION_TOKEN term        {$$ = valueOperation($1, $3, ADDITION_OP);}
+    | expr SUBSTRACTION_TOKEN term  {$$ = valueOperation($1, $3, SUBSTRACTION_OP);}
     | term                          {$$ = $1;}
 ;
 
 term:
-    term MULTIPLICATION_TOKEN factor    {$$ = $1 * $3;}
-    | term DIVISION_TOKEN factor        {$$ = $1 / $3;}
+    term MULTIPLICATION_TOKEN factor    {$$ = valueOperation($1, $3, MULTIPLICATION_OP);}
+    | term DIVISION_TOKEN factor        {$$ = valueOperation($1, $3, DIVISION_OP);}
     | factor                            {$$ = $1;}
 ;
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
-    | IDENTIFIER                            {$$ = getSymbolValue(head, $1);}
+    | IDENTIFIER                            {$$ = getVariableValue(head, $1);}
     | INTEGER                               {$$ = $1;}
     | FLOAT                                 {$$ = $1;}
 ;
 
 expression: 
-    expr LT_TOKEN expr          {$$ = ($1 < $3);}
-    | expr GT_TOKEN expr        {$$ = ($1 > $3);}
-    | expr EQUAL_TOKEN expr     {$$ = ($1 == $3);}
-    | expr LTE_TOKEN expr       {$$ = ($1 <= $3);}
-    | expr GTE_TOKEN expr       {$$ = ($1 >= $3);}
+    expr LT_TOKEN expr          {$$ = valueEvaluation($1, $3, LT_OP);}
+    | expr GT_TOKEN expr        {$$ = valueEvaluation($1, $3, GT_OP);}
+    | expr EQUAL_TOKEN expr     {$$ = valueEvaluation($1, $3, EQUAL_OP);}
+    | expr LTE_TOKEN expr       {$$ = valueEvaluation($1, $3, LTE_OP);}
+    | expr GTE_TOKEN expr       {$$ = valueEvaluation($1, $3, GTE_OP);}
 ;
 
 %%
 
 
 /********* EPILOGUE *********/
+
+void variable_declaration_error(char *id){
+    printf("Error: %s was already declared or was not found\n", id);
+    
+}
+void variable_input_error(char *id){
+    printf("Error: %s input mismatch\n", id);
+    
+}
 
 void yyerror(char *s) {
     fprintf(stdout, "%s\n", s);
@@ -146,7 +166,7 @@ int main(int argc, char **argv) {
     if(argc >= 2) {
 	    freopen(argv[1], "r", stdin);
 	}
-    yyparse();
+    int parse = yyparse();
     displaySymbolTable(head);
     
     //free_table();
