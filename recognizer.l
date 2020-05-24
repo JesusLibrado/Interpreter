@@ -1,10 +1,13 @@
 %{
-    #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
+    #include "value.h"
     #include "parser.tab.h"
 
-    void syntaxError();
+    int integer_value(int);
+    int float_value(int);
+    int identifier_value(int);
+
 %}
 
 /******* CONSTANTS *******/
@@ -16,46 +19,55 @@ alpha [a-zA-Z]
 
 [[:space:]]+
 
-"program"						{/*printf("Terminal: %s\n", yytext);*/return PROGRAM_TOKEN;}
-"set"							{/*printf("Terminal: %s\n", yytext);*/return SET_TOKEN;}
-"var"							{/*printf("Terminal: %s\n", yytext);*/return VAR_TOKEN;}
-"int"							{/*printf("Terminal: %s\n", yytext);*/return INT_TOKEN;}
-"float"							{/*printf("Terminal: %s\n", yytext);*/return FLOAT_TOKEN;}
-"read"							{/*printf("Terminal: %s\n", yytext);*/return READ_TOKEN;}
-"print"							{/*printf("Terminal: %s\n", yytext);*/return PRINT_TOKEN;}
-"if"							{/*printf("Terminal: %s\n", yytext);*/return IF_TOKEN;}
-"ifelse"						{/*printf("Terminal: %s\n", yytext);*/return IFELSE_TOKEN;}
-"while"							{/*printf("Terminal: %s\n", yytext);*/return WHILE_TOKEN;}
-"for"							{/*printf("Terminal: %s\n", yytext);*/return FOR_TOKEN;}
-"step"							{/*printf("Terminal: %s\n", yytext);*/return STEP_TOKEN;}
-"to"							{/*printf("Terminal: %s\n", yytext);*/return TO_TOKEN;}
-"do"							{/*printf("Terminal: %s\n", yytext);*/return DO_TOKEN;}
-"+"								{/*printf("Terminal: %s\n", yytext);*/return ADDITION_TOKEN;}
-"-"								{/*printf("Terminal: %s\n", yytext);*/return SUBSTRACTION_TOKEN;}
-"*"								{/*printf("Terminal: %s\n", yytext);*/return MULTIPLICATION_TOKEN;}
-"/"								{/*printf("Terminal: %s\n", yytext);*/return DIVISION_TOKEN;}
-"="								{/*printf("Terminal: %s\n", yytext);*/return EQUAL_TOKEN;}
-"<"								{/*printf("Terminal: %s\n", yytext);*/return LT_TOKEN;}
-"<="							{/*printf("Terminal: %s\n", yytext);*/return LTE_TOKEN;}
-">"								{/*printf("Terminal: %s\n", yytext);*/return GT_TOKEN;}
-">="							{/*printf("Terminal: %s\n", yytext);*/return GTE_TOKEN;}
-"{"								{/*printf("Terminal: %s\n", yytext);*/return OPEN_CURLY_BRACKET;}
-"}"								{/*printf("Terminal: %s\n", yytext);*/return CLOSE_CURLY_BRACKET;}
-"("								{/*printf("Terminal: %s\n", yytext);*/return OPEN_PARENTHESIS;}
-")"								{/*printf("Terminal: %s\n", yytext);*/return CLOSE_PARENTHESIS;}
-";"                             {/*printf("Terminal: %s\n", yytext);*/return SEMI_COLON_TOKEN;}	
-":"                             {/*printf("Terminal: %s\n", yytext);*/return COLON_TOKEN;}	
+"program"						{return PROGRAM_TOKEN;}
+"set"							{return SET_TOKEN;}
+"var"							{return VAR_TOKEN;}
+"int"							{return INT_TOKEN;}
+"float"							{return FLOAT_TOKEN;}
+"read"							{return READ_TOKEN;}
+"print"							{return PRINT_TOKEN;}
+"if"							{return IF_TOKEN;}
+"ifelse"						{return IFELSE_TOKEN;}
+"while"							{return WHILE_TOKEN;}
+"for"							{return FOR_TOKEN;}
+"step"							{return STEP_TOKEN;}
+"to"							{return TO_TOKEN;}
+"do"							{return DO_TOKEN;}
+"+"								{return ADDITION_TOKEN;}
+"-"								{return SUBSTRACTION_TOKEN;}
+"*"								{return MULTIPLICATION_TOKEN;}
+"/"								{return DIVISION_TOKEN;}
+"="								{return EQUAL_TOKEN;}
+"<"								{return LT_TOKEN;}
+"<="							{return LTE_TOKEN;}
+">"								{return GT_TOKEN;}
+">="							{return GTE_TOKEN;}
+"{"								{return OPEN_CURLY_BRACKET;}
+"}"								{return CLOSE_CURLY_BRACKET;}
+"("								{return OPEN_PARENTHESIS;}
+")"								{return CLOSE_PARENTHESIS;}
+";"                             {return SEMI_COLON_TOKEN;}	
+":"                             {return COLON_TOKEN;}	
 
-{alpha}+                        {yylval.id = strdup(yytext); /*printf("Identifier: %s\n", yytext);*/ return IDENTIFIER;}
+{alpha}+                        {return identifier_value(IDENTIFIER);}
 
-{digit}+                        {yylval.number = atof(yytext); /*printf("Integer: %s\n", yytext);*/ return INTEGER;}
-{digit}+.{digit}+               {yylval.number = atof(yytext); /*printf("Float: %s\n", yytext);*/ return FLOAT;}
+{digit}+                        {return integer_value(INTEGER);}
+{digit}+.{digit}+               {return float_value(FLOAT);}
 
 
 %%
 
-void syntaxError(){
-    printf("Syntax error (text=%s) at line: %d\n", yytext, yylineno);
+int integer_value(int token) {
+    yylval.value = getInteger(atoi(yytext));
+    return token;
+}
+int float_value(int token) {
+    yylval.value = getFloat(atof(yytext));
+    return token;
+}
+int identifier_value(int token) {
+    yylval.identifier = strdup(yytext);
+    return token;
 }
 
 int yywrap(void) {}
