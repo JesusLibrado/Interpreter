@@ -89,7 +89,31 @@ assign_stmt:
         
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
-        printf("Reading something\n");
+        if(!variableHasBeenDeclared(head, $2)){
+            variable_input_error($2);
+            YYERROR;
+        }
+        struct variableValue *val = getVariableValue(head, $2);
+        printf("Type %s: ", $2 );
+        if(val->type == TYPE_INT){
+            int newValue;
+            scanf("%d", &newValue);
+            val->value.int_val = newValue;
+            if(!setVariableValue(head, $2, val)){
+                variable_input_error($2);
+                YYERROR;
+            }
+        }
+        if(val->type == TYPE_FLOAT){
+            float newValue;
+            scanf("%f", &newValue);
+            val->value.float_val = newValue;
+            if(!setVariableValue(head, $2, val)){
+                variable_input_error($2);
+                YYERROR;
+            }
+        }
+        
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
         printValue($2);
