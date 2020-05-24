@@ -2,10 +2,11 @@
 %{
     #include <stdio.h>
     #include "symbol_table.h"
+    #include "value.h"
     int yylex(void);
     void yyerror(char *);
 
-    struct node *head = NULL;
+    struct tableNode *head = NULL;
 
 %}
 
@@ -16,6 +17,7 @@
     int boolean; // 1: true | 0: false
     float number;
     char *id;
+    struct variable * value;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -52,7 +54,7 @@ decls:
 
 dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
     if(!find(head, $2)){
-        declare_var(&head, $2, $4);
+        declareVariable(&head, $2, $4);
     }else 
         printf("Declaration error!: %s is a variable\n", $2);
 };
@@ -72,12 +74,12 @@ stmt:
 assign_stmt:
     SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
         if(find(head, $2)){
-            assign_value(head, $2, $3);
+            assignSymbolValue(head, $2, $3);
         } else 
             printf("Assignation error!: %s does not exist\n", $2);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
-        read_user_input(head, $2);
+        //read_user_input(head, $2);
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
         printf("Print %.2f\n", $2);
@@ -118,7 +120,7 @@ term:
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
-    | IDENTIFIER                            {$$ = get_value(head, $1);}
+    | IDENTIFIER                            {$$ = getSymbolValue(head, $1);}
     | INTEGER                               {$$ = $1;}
     | FLOAT                                 {$$ = $1;}
 ;
@@ -145,7 +147,7 @@ int main(int argc, char **argv) {
 	    freopen(argv[1], "r", stdin);
 	}
     yyparse();
-    print_table(head);
+    displaySymbolTable(head);
     
     //free_table();
     return 0;
