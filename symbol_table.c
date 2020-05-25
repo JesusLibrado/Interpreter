@@ -50,6 +50,10 @@ bool variableHasValueAssigned(struct tableNode *head, char *id){
     return getVariable(head->next, id);
 }
 
+char *getVariableId(struct tableNode *var){
+    return var->identifier;
+}
+
 void displaySymbolTable(struct tableNode *head){
     printf("\tvariable  |\ttype \t|\tvalue\n");
     variable_value *currentVariableValue = NULL;

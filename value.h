@@ -34,6 +34,8 @@ variable_value * getInteger(int);
 variable_value * getFloat(float);
 bool typesMatch(variable_value *, variable_value *);
 
+char * getTypeAsString(variable_value *);
+
 bool valueEvaluation(variable_value *, variable_value *, int);
 variable_value * valueOperation(variable_value *, variable_value *, int);
 

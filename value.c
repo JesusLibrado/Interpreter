@@ -1,5 +1,9 @@
 #include "value.h"
 
+char * getTypeAsString(variable_value *value){
+    return (value->type == TYPE_INT)?"int":"float";
+}
+
 variable_value* getInteger(int newInt) {
     variable_value *newValue = (variable_value *)malloc(sizeof(variable_value));
     newValue->type = TYPE_INT;

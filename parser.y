@@ -4,10 +4,12 @@
     #include <stdbool.h>
     #include "value.h"
     #include "symbol_table.h"
+    #include "syntax_tree.h"
     int yylex(void);
     void yyerror(char *);
 
     struct tableNode *head = NULL;
+    struct treeNode *tree = NULL;
 
     void variable_declaration_error(char *id);
     void variable_input_error(char *id);
@@ -22,6 +24,7 @@
     bool boolean;
     char *identifier;
     struct variableValue* value;
+    struct treeNode* node;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -36,6 +39,7 @@
 
 %type<value> factor expr term tipo
 %type<boolean> expression
+%type<node> prog stmt assign_stmt stmt_lst cmp_stmt
 
 /********* GRAMMAR RULES *********/
 
@@ -43,7 +47,9 @@
 
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt;
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt {
+    tree = $6;
+};
 
 opt_decls: 
     decls
@@ -70,10 +76,10 @@ tipo:
 ;
 
 stmt: 
-    assign_stmt
-    | if_stmt
-    | iter_stmt
-    | cmp_stmt
+    assign_stmt {$$ = $1;}
+    | if_stmt {$$ = NULL;}
+    | iter_stmt {$$ = NULL;}
+    | cmp_stmt {$$ = $1;}
 ;
 
 assign_stmt:
@@ -86,38 +92,42 @@ assign_stmt:
             variable_input_error($2);
             YYERROR;
         }
-        
+        $$ = NULL;
+        //getNewSetNode(getVariable(head, $2), $3);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
         if(!variableHasBeenDeclared(head, $2)){
             variable_input_error($2);
             YYERROR;
         }
-        struct variableValue *val = getVariableValue(head, $2);
-        printf("Type %s: ", $2 );
-        if(val->type == TYPE_INT){
-            int newValue;
-            scanf("%d", &newValue);
-            val->value.int_val = newValue;
-            if(!setVariableValue(head, $2, val)){
-                variable_input_error($2);
-                YYERROR;
-            }
-        }
-        if(val->type == TYPE_FLOAT){
-            float newValue;
-            scanf("%f", &newValue);
-            val->value.float_val = newValue;
-            if(!setVariableValue(head, $2, val)){
-                variable_input_error($2);
-                YYERROR;
-            }
-        }
+        struct treeNode * id_node = getNewIdNode(getVariable(head, $2));
+        $$ = getNewReadNode(id_node);
+        // struct variableValue *val = getVariableValue(head, $2);
+        // printf("Type %s: ", $2 );
+        // if(val->type == TYPE_INT){
+        //     int newValue;
+        //     scanf("%d", &newValue);
+        //     val->value.int_val = newValue;
+        //     if(!setVariableValue(head, $2, val)){
+        //         variable_input_error($2);
+        //         YYERROR;
+        //     }
+        // }
+        // if(val->type == TYPE_FLOAT){
+        //     float newValue;
+        //     scanf("%f", &newValue);
+        //     val->value.float_val = newValue;
+        //     if(!setVariableValue(head, $2, val)){
+        //         variable_input_error($2);
+        //         YYERROR;
+        //     }
+        // }
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
         printValue($2);
         printf("\n");
+        $$ = NULL;
     }
 ;
 
@@ -132,13 +142,18 @@ iter_stmt:
 ;
 
 cmp_stmt: 
-    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET
-    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET
+    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET { $$ = NULL;}
+    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET { $$ = $2;}
 ;
 
 stmt_lst: 
-    stmt
-    | stmt_lst stmt
+    stmt {$$ = $1;}
+    | stmt_lst stmt {
+        struct treeNode * from = $1;
+        struct treeNode * to = $2;
+        from->next = to;
+        $$ = to;
+    }
 ;
 
 expr: 
@@ -192,7 +207,9 @@ int main(int argc, char **argv) {
 	}
     int parse = yyparse();
     displaySymbolTable(head);
-    
+    symbol_table = head;
+    syntax_tree = tree;
+    printSyntaxTree(tree);
     //free_table();
     return 0;
 }
