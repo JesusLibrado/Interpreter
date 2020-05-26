@@ -15,9 +15,12 @@ struct tableNode {
 
 void displaySymbolTable(struct tableNode *);
 void freeSymbolTable(struct tableNode **head);
+void printVariable(struct tableNode *);
 
 void declareVariable(struct tableNode **, char *, variable_value*);
 bool setVariableValue(struct tableNode *, char *, variable_value*);
+
+char *getVariableId(struct tableNode *);
 
 variable_value *getVariableValue(struct tableNode *, char *);
 variable *getVariable(struct tableNode *, char *);

@@ -4,10 +4,12 @@
     #include <stdbool.h>
     #include "value.h"
     #include "symbol_table.h"
+    #include "syntax_tree.h"
     int yylex(void);
     void yyerror(char *);
 
     struct tableNode *head = NULL;
+    struct treeNode *tree = NULL;
 
     void variable_declaration_error(char *id);
     void variable_input_error(char *id);
@@ -22,6 +24,7 @@
     bool boolean;
     char *identifier;
     struct variableValue* value;
+    struct treeNode* node;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -34,8 +37,10 @@
 %token<value> INTEGER FLOAT
 %token<identifier> IDENTIFIER
 
-%type<value> factor expr term tipo
-%type<boolean> expression
+%type<value> tipo
+%type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
+%type<node> if_stmt iter_stmt
+%type<node> factor expr term expression
 
 /********* GRAMMAR RULES *********/
 
@@ -43,7 +48,9 @@
 
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt;
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt {
+    tree = $6;
+};
 
 opt_decls: 
     decls
@@ -70,10 +77,10 @@ tipo:
 ;
 
 stmt: 
-    assign_stmt
-    | if_stmt
-    | iter_stmt
-    | cmp_stmt
+    assign_stmt {$$ = $1;}
+    | if_stmt   {$$ = $1;}
+    | iter_stmt {$$ = $1;}
+    | cmp_stmt  {$$ = $1;}
 ;
 
 assign_stmt:
@@ -82,90 +89,129 @@ assign_stmt:
             variable_declaration_error($2);
             YYERROR;
         } 
-        if(!setVariableValue(head, $2, $3)){
-            variable_input_error($2);
-            YYERROR;
-        }
-        
+        // if(!setVariableValue(head, $2, $3)){
+        //     variable_input_error($2);
+        //     YYERROR;
+        // }
+        struct treeNode * id_node = getIdNode(getVariable(head, $2));
+        $$ = getSetNode(id_node, $3);
+        //getNewSetNode(getVariable(head, $2), $3);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
         if(!variableHasBeenDeclared(head, $2)){
             variable_input_error($2);
             YYERROR;
         }
-        struct variableValue *val = getVariableValue(head, $2);
-        printf("Type %s: ", $2 );
-        if(val->type == TYPE_INT){
-            int newValue;
-            scanf("%d", &newValue);
-            val->value.int_val = newValue;
-            if(!setVariableValue(head, $2, val)){
-                variable_input_error($2);
-                YYERROR;
-            }
-        }
-        if(val->type == TYPE_FLOAT){
-            float newValue;
-            scanf("%f", &newValue);
-            val->value.float_val = newValue;
-            if(!setVariableValue(head, $2, val)){
-                variable_input_error($2);
-                YYERROR;
-            }
-        }
+        struct treeNode * id_node = getIdNode(getVariable(head, $2));
+        $$ = getReadNode(id_node);
+        // struct variableValue *val = getVariableValue(head, $2);
+        // printf("Type %s: ", $2 );
+        // if(val->type == TYPE_INT){
+        //     int newValue;
+        //     scanf("%d", &newValue);
+        //     val->value.int_val = newValue;
+        //     if(!setVariableValue(head, $2, val)){
+        //         variable_input_error($2);
+        //         YYERROR;
+        //     }
+        // }
+        // if(val->type == TYPE_FLOAT){
+        //     float newValue;
+        //     scanf("%f", &newValue);
+        //     val->value.float_val = newValue;
+        //     if(!setVariableValue(head, $2, val)){
+        //         variable_input_error($2);
+        //         YYERROR;
+        //     }
+        // }
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
-        printValue($2);
-        printf("\n");
+        $$ = getPrintNode($2);
     }
 ;
 
 if_stmt: 
-    IF_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
-    | IFELSE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt stmt
+    IF_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt    {
+            $$ = getIfNode($3, reverseSyntaxTree($5));
+        }
+    | IFELSE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt stmt {
+            $$ = getIfElseNode($3, reverseSyntaxTree($5), reverseSyntaxTree($6));
+        }
 ;
 
 iter_stmt: 
-    WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
-    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expr STEP_TOKEN expr DO_TOKEN stmt
+    WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt { $$ = getWhileNode($3, $5); }
+    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expression STEP_TOKEN expr DO_TOKEN stmt { 
+            struct treeNode * id_node = getIdNode(getVariable(head, $3));
+            $$ = getForNode(id_node, $4, $6, $8, $10); 
+        }
 ;
 
 cmp_stmt: 
-    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET
-    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET
+    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET { $$ = NULL;}
+    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET { $$ = $2;}
 ;
 
 stmt_lst: 
-    stmt
-    | stmt_lst stmt
+    stmt            {$$ = $1;}
+    | stmt_lst stmt {$2->next = $1;$$ = $2;}
 ;
 
 expr: 
-    expr ADDITION_TOKEN term        {$$ = valueOperation($1, $3, ADDITION_OP);}
-    | expr SUBSTRACTION_TOKEN term  {$$ = valueOperation($1, $3, SUBSTRACTION_OP);}
-    | term                          {$$ = $1;}
+    expr ADDITION_TOKEN term        {
+            $$ = getExprNode(ADDITION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, ADDITION_OP);
+        }
+    | expr SUBSTRACTION_TOKEN term  {
+            $$ = getExprNode(SUBSTRACTION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, SUBSTRACTION_OP);
+        }
+    | term                          {
+            $$ = $1;
+        }
 ;
 
 term:
-    term MULTIPLICATION_TOKEN factor    {$$ = valueOperation($1, $3, MULTIPLICATION_OP);}
-    | term DIVISION_TOKEN factor        {$$ = valueOperation($1, $3, DIVISION_OP);}
+    term MULTIPLICATION_TOKEN factor    {
+            $$ = getTermNode(MULTIPLICATION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, MULTIPLICATION_OP);
+        }
+    | term DIVISION_TOKEN factor        {
+            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);;
+            //$$ = valueOperation($1, $3, DIVISION_OP);
+        }
     | factor                            {$$ = $1;}
 ;
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
-    | IDENTIFIER                            {$$ = getVariableValue(head, $1);}
-    | INTEGER                               {$$ = $1;}
-    | FLOAT                                 {$$ = $1;}
+    | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
+    | INTEGER                               {$$ = getValueNode($1);}
+    | FLOAT                                 {$$ = getValueNode($1);}
 ;
 
 expression: 
-    expr LT_TOKEN expr          {$$ = valueEvaluation($1, $3, LT_OP);}
-    | expr GT_TOKEN expr        {$$ = valueEvaluation($1, $3, GT_OP);}
-    | expr EQUAL_TOKEN expr     {$$ = valueEvaluation($1, $3, EQUAL_OP);}
-    | expr LTE_TOKEN expr       {$$ = valueEvaluation($1, $3, LTE_OP);}
-    | expr GTE_TOKEN expr       {$$ = valueEvaluation($1, $3, GTE_OP);}
+    expr LT_TOKEN expr          {
+            $$ = getExpressionNode(LT_OP, $1, $3);
+            //$$ = valueEvaluation($1, $3, LT_OP);
+        }
+    | expr GT_TOKEN expr        {
+            $$ = getExpressionNode(GT_OP, $1, $3);
+            //$$ = valueEvaluation($1, $3, GT_OP);
+        }
+    | expr EQUAL_TOKEN expr     {
+            $$ = getExpressionNode(EQUAL_OP, $1, $3);
+            //$$ = valueEvaluation($1, $3, EQUAL_OP);
+        }
+    | expr LTE_TOKEN expr       {
+            $$ = getExpressionNode(LTE_OP, $1, $3);
+            //$$ = valueEvaluation($1, $3, LTE_OP);
+        }
+    | expr GTE_TOKEN expr       {
+            $$ = getExpressionNode(GTE_OP, $1, $3);
+            //$$ = valueEvaluation($1, $3, GTE_OP);
+        }
 ;
 
 %%
@@ -192,7 +238,9 @@ int main(int argc, char **argv) {
 	}
     int parse = yyparse();
     displaySymbolTable(head);
-    
+    symbol_table = head;
+    syntax_tree = reverseSyntaxTree(tree);
+    printSyntaxTree(syntax_tree);
     //free_table();
     return 0;
 }
