@@ -10,6 +10,19 @@ struct treeNode * getNewNode(int type, instruction * instr, tree_node *nextTreeN
     return newTreeNode;
 }
 
+
+struct treeNode * getSetNode(struct treeNode * var, struct treeNode * e){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->set = (struct setNode *)malloc(sizeof(struct setNode));
+    newInstr->set->id = NULL;
+    newInstr->set->id = var;
+    newInstr->set->expr = NULL;
+    newInstr->set->expr = e;
+
+    return getNewNode(SET_NODE, newInstr, NULL);
+
+}
 struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
 
@@ -57,6 +70,7 @@ struct treeNode * getReadNode(struct treeNode * node){
 struct treeNode * getValueNode(variable_value * val){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
 
+    newInstr->value = (struct valueNode *)malloc(sizeof(struct valueNode));
     newInstr->value->val = val;
 
     return getNewNode(VALUE_NODE, newInstr, NULL);
@@ -83,9 +97,26 @@ void printSyntaxTree(struct treeNode *root){
                 printf("[Read]----\n");
                 printSyntaxTree(root->node->read->id);
             break;
+        case SET_NODE:
+                printf("[Set]----\n");
+                printSyntaxTree(root->node->set->id);
+                printSyntaxTree(root->node->set->expr);
+            break;
         case PRINT_NODE:
                 printf("[Print]----\n");
                 printSyntaxTree(root->node->print->expr);
+            break;
+        case EXPR_NODE:
+                printf("[Expr]----\n");
+                printSyntaxTree(root->node->expr->expr);
+                printf("(-- op --)\n");
+                printSyntaxTree(root->node->expr->term);
+            break;
+        case TERM_NODE:
+                printf("[Term]----\n");
+                printSyntaxTree(root->node->term->term);
+                printf("(-- op --)\n");
+                printSyntaxTree(root->node->term->factor);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }

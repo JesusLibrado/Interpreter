@@ -41,19 +41,15 @@ struct readNode {
 struct printNode {
     tree_node * expr;
 }typedef print_node;
-
 struct setNode {
     tree_node * id;
     tree_node * expr;
 }typedef set_node;
-
 struct exprNode {
     int operation;
     tree_node * expr;
     tree_node * term;
 }typedef expr_node;
-
-
 struct termNode {
     int operation;
     tree_node * term;
@@ -78,14 +74,14 @@ tree_node * syntax_tree;
 
 struct treeNode * reverseSyntaxTree(struct treeNode *);
 struct treeNode * getNewNode(int, union node *, struct treeNode *);
+struct treeNode * getExprNode(int, struct treeNode *, struct treeNode *);
+struct treeNode * getTermNode(int, struct treeNode *, struct treeNode *);
 struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(variable_value *);
 struct treeNode * getIdNode(variable *);
 
 
-struct treeNode * getSetNode(variable *, variable_value *);
-struct treeNode * getExprNode(int, struct treeNode *, struct treeNode *);
-struct treeNode * getTermNode(int, struct treeNode *, struct treeNode *);
+struct treeNode * getSetNode(struct treeNode *, struct treeNode *);
 
 void printSyntaxTree(struct treeNode *);

@@ -92,7 +92,8 @@ assign_stmt:
         //     variable_input_error($2);
         //     YYERROR;
         // }
-        $$ = NULL;
+        struct treeNode * id_node = getIdNode(getVariable(head, $2));
+        $$ = getSetNode(id_node, $3);
         //getNewSetNode(getVariable(head, $2), $3);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
