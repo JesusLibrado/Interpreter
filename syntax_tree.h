@@ -70,7 +70,17 @@ struct ifElseNode{
     tree_node * if_statement;
     tree_node * else_statement;
 }typedef if_else_node;
-
+struct whileNode{
+    tree_node * condition;
+    tree_node * statement;
+}typedef while_node;
+struct forNode{
+    tree_node * id;
+    tree_node * id_value;
+    tree_node * to;
+    tree_node * step;
+    tree_node * do_;
+}typedef for_node;
 
 union node {
     id_node * id;
@@ -83,6 +93,8 @@ union node {
     expression_node* expression;
     if_node * if_;
     if_else_node * if_else;
+    for_node * for_;
+    while_node * while_;
 } typedef instruction;
 
 
@@ -99,9 +111,17 @@ struct treeNode * getExpressionNode(int, struct treeNode *, struct treeNode *);
 struct treeNode * getIfElseNode(struct treeNode *, struct treeNode *, struct treeNode *);
 struct treeNode * getSetNode(struct treeNode *, struct treeNode *);
 struct treeNode * getIfNode(struct treeNode *, struct treeNode *);
+struct treeNode * getWhileNode(struct treeNode *, struct treeNode *);
 struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(variable_value *);
 struct treeNode * getIdNode(variable *);
+struct treeNode * getForNode(
+    struct treeNode *,
+    struct treeNode *,
+    struct treeNode *,
+    struct treeNode *,
+    struct treeNode *
+);
 
 void printSyntaxTree(struct treeNode *);

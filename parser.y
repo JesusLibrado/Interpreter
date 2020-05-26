@@ -39,7 +39,7 @@
 
 %type<value> tipo
 %type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
-%type<node> if_stmt
+%type<node> if_stmt iter_stmt
 %type<node> factor expr term expression
 
 /********* GRAMMAR RULES *********/
@@ -78,9 +78,9 @@ tipo:
 
 stmt: 
     assign_stmt {$$ = $1;}
-    | if_stmt {$$ = $1;}
-    | iter_stmt {$$ = NULL;}
-    | cmp_stmt {$$ = $1;}
+    | if_stmt   {$$ = $1;}
+    | iter_stmt {$$ = $1;}
+    | cmp_stmt  {$$ = $1;}
 ;
 
 assign_stmt:
@@ -141,8 +141,11 @@ if_stmt:
 ;
 
 iter_stmt: 
-    WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
-    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expr STEP_TOKEN expr DO_TOKEN stmt
+    WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt { $$ = getWhileNode($3, $5); }
+    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expression STEP_TOKEN expr DO_TOKEN stmt { 
+            struct treeNode * id_node = getIdNode(getVariable(head, $3));
+            $$ = getForNode(id_node, $4, $6, $8, $10); 
+        }
 ;
 
 cmp_stmt: 
@@ -152,10 +155,7 @@ cmp_stmt:
 
 stmt_lst: 
     stmt            {$$ = $1;}
-    | stmt_lst stmt {
-            $2->next = $1;
-            $$ = $2;
-        }
+    | stmt_lst stmt {$2->next = $1;$$ = $2;}
 ;
 
 expr: 
