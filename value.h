@@ -32,13 +32,11 @@ struct variableValue {
 
 variable_value * getInteger(int);
 variable_value * getFloat(float);
+variable_value * valueOperation(variable_value *, variable_value *, int);
 bool typesMatch(variable_value *, variable_value *);
+bool valueEvaluation(variable_value *, variable_value *, int);
 
 char * getTypeAsString(variable_value *);
-
-bool valueEvaluation(variable_value *, variable_value *, int);
-variable_value * valueOperation(variable_value *, variable_value *, int);
-
 void printValue(variable_value *);
 
 #endif

@@ -42,8 +42,8 @@ void printSyntaxTree(struct treeNode *root){
                 printf("[Read]----\n");
                 printSyntaxTree(root->node->read->id);
             break;
-        case IDENTIFIER_NODE:   
-                printf("var %s  \n", getVariableId(root->node->id->symbol));
+        case IDENTIFIER_NODE:
+                printVariable(root->node->id->symbol);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }

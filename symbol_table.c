@@ -54,6 +54,16 @@ char *getVariableId(struct tableNode *var){
     return var->identifier;
 }
 
+void printVariable(struct tableNode * var) {
+    variable_value * val = var->value;
+    if(val->type == TYPE_INT){
+        printf("var %s: %s = %d ", var->identifier, getTypeAsString(val), val->value.int_val);
+    }
+    if(val->type == TYPE_FLOAT){
+        printf("var %s: %s = %d ", var->identifier, getTypeAsString(val), val->value.int_val);
+    }
+}
+
 void displaySymbolTable(struct tableNode *head){
     printf("\tvariable  |\ttype \t|\tvalue\n");
     variable_value *currentVariableValue = NULL;
