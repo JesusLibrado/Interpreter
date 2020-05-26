@@ -10,7 +10,42 @@ struct treeNode * getNewNode(int type, instruction * instr, tree_node *nextTreeN
     return newTreeNode;
 }
 
-struct treeNode * getNewReadNode(struct treeNode * node){
+struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->expr = (struct exprNode *)malloc(sizeof(struct exprNode));
+    newInstr->expr->operation = op;
+    newInstr->expr->expr = NULL;
+    newInstr->expr->expr = e;
+    newInstr->expr->term = NULL;
+    newInstr->expr->term = t;
+
+    return getNewNode(EXPR_NODE, newInstr, NULL);
+}
+struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->term = (struct termNode *)malloc(sizeof(struct termNode));
+    newInstr->term->operation = op;
+    newInstr->term->term = NULL;
+    newInstr->term->term = t;
+    newInstr->term->factor = NULL;
+    newInstr->term->factor = f;
+
+    return getNewNode(TERM_NODE, newInstr, NULL);
+}
+
+struct treeNode * getPrintNode(struct treeNode * node){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->print = (struct printNode *)malloc(sizeof(struct printNode));
+    newInstr->print->expr = NULL;
+    newInstr->print->expr = node;
+
+    return getNewNode(PRINT_NODE, newInstr, NULL);
+}
+
+struct treeNode * getReadNode(struct treeNode * node){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
 
     newInstr->read = (struct readNode *)malloc(sizeof(struct readNode));
@@ -19,15 +54,15 @@ struct treeNode * getNewReadNode(struct treeNode * node){
     return getNewNode(READ_NODE, newInstr, NULL);
 }
 
-struct treeNode * getNewValueNode(variable_value * val){
+struct treeNode * getValueNode(variable_value * val){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
 
-    newInstr->value->value = val;
+    newInstr->value->val = val;
 
     return getNewNode(VALUE_NODE, newInstr, NULL);
 }
 
-struct treeNode * getNewIdNode(variable * var){
+struct treeNode * getIdNode(variable * var){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
     
     newInstr->id = (struct idNode *)malloc(sizeof(struct idNode));
@@ -38,14 +73,29 @@ struct treeNode * getNewIdNode(variable * var){
 void printSyntaxTree(struct treeNode *root){
     if(root==NULL) {printf("\n"); return;}
     switch(root->nodetype) {
-        case READ_NODE:
-                printf("[Read]----\n");
-                printSyntaxTree(root->node->read->id);
+        case VALUE_NODE:
+                printValue(root->node->value->val);
             break;
         case IDENTIFIER_NODE:
                 printVariable(root->node->id->symbol);
             break;
+        case READ_NODE:
+                printf("[Read]----\n");
+                printSyntaxTree(root->node->read->id);
+            break;
+        case PRINT_NODE:
+                printf("[Print]----\n");
+                printSyntaxTree(root->node->print->expr);
+            break;
         default: printf("ERROR: unknown root type \n"); break;
     }
     printSyntaxTree(root->next);
+}
+
+struct treeNode * reverseSyntaxTree(struct treeNode * root){
+    if (root == NULL || root->next == NULL)  return root; 
+    struct treeNode * rest = reverseSyntaxTree(root->next); 
+    root->next->next = root;
+    root->next = NULL; 
+    return rest; 
 }

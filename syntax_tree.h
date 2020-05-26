@@ -18,6 +18,7 @@ variable * symbol_table;
 #define IFELSE_NODE 8
 #define WHILE_NODE 9
 #define FOR_NODE 10
+#define TERM_NODE 11
 
 
 struct treeNode {
@@ -27,20 +28,16 @@ struct treeNode {
 }typedef tree_node;
 
 
+
 struct idNode {
     variable * symbol;
 }typedef id_node;
-
-struct valueNode {
-    variable_value * value;
+struct valueNode{
+    variable_value * val;
 }typedef value_node;
-
-struct exprNode{
-    variable * symbol;
-    variable_value * value;
-    int operationType;
-}typedef expr_node;
-
+struct readNode {
+    tree_node * id;
+}typedef read_node;
 struct printNode {
     tree_node * expr;
 }typedef print_node;
@@ -50,9 +47,18 @@ struct setNode {
     tree_node * expr;
 }typedef set_node;
 
-struct readNode {
-    tree_node * id;
-}typedef read_node;
+struct exprNode {
+    int operation;
+    tree_node * expr;
+    tree_node * term;
+}typedef expr_node;
+
+
+struct termNode {
+    int operation;
+    tree_node * term;
+    tree_node * factor;
+}typedef term_node;
 
 union node {
     id_node * id;
@@ -61,18 +67,25 @@ union node {
     print_node * print;
     set_node * set;
     expr_node* expr;
+    term_node* term;
 } typedef instruction;
+
+
+
 
 
 tree_node * syntax_tree;
 
+struct treeNode * reverseSyntaxTree(struct treeNode *);
 struct treeNode * getNewNode(int, union node *, struct treeNode *);
-struct treeNode * getNewReadNode(struct treeNode *);
-struct treeNode * getNewValueNode(variable_value *);
-struct treeNode * getNewIdNode(variable *);
+struct treeNode * getReadNode(struct treeNode *);
+struct treeNode * getPrintNode(struct treeNode *);
+struct treeNode * getValueNode(variable_value *);
+struct treeNode * getIdNode(variable *);
 
 
-struct treeNode * getNewPrintNode(struct treeNode *);
-struct treeNode * getNewSetNode(variable *, variable_value *);
+struct treeNode * getSetNode(variable *, variable_value *);
+struct treeNode * getExprNode(int, struct treeNode *, struct treeNode *);
+struct treeNode * getTermNode(int, struct treeNode *, struct treeNode *);
 
 void printSyntaxTree(struct treeNode *);

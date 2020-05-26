@@ -37,9 +37,9 @@
 %token<value> INTEGER FLOAT
 %token<identifier> IDENTIFIER
 
-%type<value> factor expr term tipo
-%type<boolean> expression
-%type<node> prog stmt assign_stmt stmt_lst cmp_stmt
+%type<value> tipo
+%type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
+%type<node> factor expr term expression
 
 /********* GRAMMAR RULES *********/
 
@@ -88,10 +88,10 @@ assign_stmt:
             variable_declaration_error($2);
             YYERROR;
         } 
-        if(!setVariableValue(head, $2, $3)){
-            variable_input_error($2);
-            YYERROR;
-        }
+        // if(!setVariableValue(head, $2, $3)){
+        //     variable_input_error($2);
+        //     YYERROR;
+        // }
         $$ = NULL;
         //getNewSetNode(getVariable(head, $2), $3);
     }
@@ -100,8 +100,8 @@ assign_stmt:
             variable_input_error($2);
             YYERROR;
         }
-        struct treeNode * id_node = getNewIdNode(getVariable(head, $2));
-        $$ = getNewReadNode(id_node);
+        struct treeNode * id_node = getIdNode(getVariable(head, $2));
+        $$ = getReadNode(id_node);
         // struct variableValue *val = getVariableValue(head, $2);
         // printf("Type %s: ", $2 );
         // if(val->type == TYPE_INT){
@@ -125,9 +125,7 @@ assign_stmt:
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
-        printValue($2);
-        printf("\n");
-        $$ = NULL;
+        $$ = getPrintNode($2);
     }
 ;
 
@@ -147,40 +145,67 @@ cmp_stmt:
 ;
 
 stmt_lst: 
-    stmt {$$ = $1;}
+    stmt            {$$ = $1;}
     | stmt_lst stmt {
-        struct treeNode * from = $1;
-        struct treeNode * to = $2;
-        from->next = to;
-        $$ = to;
-    }
+            $2->next = $1;
+            $$ = $2;
+        }
 ;
 
 expr: 
-    expr ADDITION_TOKEN term        {$$ = valueOperation($1, $3, ADDITION_OP);}
-    | expr SUBSTRACTION_TOKEN term  {$$ = valueOperation($1, $3, SUBSTRACTION_OP);}
-    | term                          {$$ = $1;}
+    expr ADDITION_TOKEN term        {
+            $$ = getExprNode(ADDITION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, ADDITION_OP);
+        }
+    | expr SUBSTRACTION_TOKEN term  {
+            $$ = getExprNode(SUBSTRACTION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, SUBSTRACTION_OP);
+        }
+    | term                          {
+            $$ = $1;
+        }
 ;
 
 term:
-    term MULTIPLICATION_TOKEN factor    {$$ = valueOperation($1, $3, MULTIPLICATION_OP);}
-    | term DIVISION_TOKEN factor        {$$ = valueOperation($1, $3, DIVISION_OP);}
+    term MULTIPLICATION_TOKEN factor    {
+            $$ = getTermNode(MULTIPLICATION_OP, $1, $3);
+            //$$ = valueOperation($1, $3, MULTIPLICATION_OP);
+        }
+    | term DIVISION_TOKEN factor        {
+            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);;
+            //$$ = valueOperation($1, $3, DIVISION_OP);
+        }
     | factor                            {$$ = $1;}
 ;
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
-    | IDENTIFIER                            {$$ = getVariableValue(head, $1);}
-    | INTEGER                               {$$ = $1;}
-    | FLOAT                                 {$$ = $1;}
+    | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
+    | INTEGER                               {$$ = getValueNode($1);}
+    | FLOAT                                 {$$ = getValueNode($1);}
 ;
 
 expression: 
-    expr LT_TOKEN expr          {$$ = valueEvaluation($1, $3, LT_OP);}
-    | expr GT_TOKEN expr        {$$ = valueEvaluation($1, $3, GT_OP);}
-    | expr EQUAL_TOKEN expr     {$$ = valueEvaluation($1, $3, EQUAL_OP);}
-    | expr LTE_TOKEN expr       {$$ = valueEvaluation($1, $3, LTE_OP);}
-    | expr GTE_TOKEN expr       {$$ = valueEvaluation($1, $3, GTE_OP);}
+    expr LT_TOKEN expr          {
+            $$ = NULL;
+            //$$ = valueEvaluation($1, $3, LT_OP);
+        }
+    | expr GT_TOKEN expr        {
+            $$ = NULL;
+            //$$ = valueEvaluation($1, $3, GT_OP);
+        }
+    | expr EQUAL_TOKEN expr     {
+            $$ = NULL;
+            //$$ = valueEvaluation($1, $3, EQUAL_OP);
+        }
+    | expr LTE_TOKEN expr       {
+            $$ = NULL;
+            //$$ = valueEvaluation($1, $3, LTE_OP);
+        }
+    | expr GTE_TOKEN expr       {
+            $$ = NULL;
+            //$$ = valueEvaluation($1, $3, GTE_OP);
+        }
 ;
 
 %%
@@ -208,8 +233,8 @@ int main(int argc, char **argv) {
     int parse = yyparse();
     displaySymbolTable(head);
     symbol_table = head;
-    syntax_tree = tree;
-    printSyntaxTree(tree);
+    syntax_tree = reverseSyntaxTree(tree);
+    printSyntaxTree(syntax_tree);
     //free_table();
     return 0;
 }
