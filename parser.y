@@ -39,6 +39,7 @@
 
 %type<value> tipo
 %type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
+%type<node> if_stmt
 %type<node> factor expr term expression
 
 /********* GRAMMAR RULES *********/
@@ -77,7 +78,7 @@ tipo:
 
 stmt: 
     assign_stmt {$$ = $1;}
-    | if_stmt {$$ = NULL;}
+    | if_stmt {$$ = $1;}
     | iter_stmt {$$ = NULL;}
     | cmp_stmt {$$ = $1;}
 ;
@@ -131,8 +132,12 @@ assign_stmt:
 ;
 
 if_stmt: 
-    IF_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt
-    | IFELSE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt stmt
+    IF_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt    {
+            $$ = getIfNode($3, reverseSyntaxTree($5));
+        }
+    | IFELSE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt stmt {
+            $$ = getIfElseNode($3, reverseSyntaxTree($5), reverseSyntaxTree($6));
+        }
 ;
 
 iter_stmt: 
@@ -188,23 +193,23 @@ factor:
 
 expression: 
     expr LT_TOKEN expr          {
-            $$ = NULL;
+            $$ = getExpressionNode(LT_OP, $1, $3);
             //$$ = valueEvaluation($1, $3, LT_OP);
         }
     | expr GT_TOKEN expr        {
-            $$ = NULL;
+            $$ = getExpressionNode(GT_OP, $1, $3);
             //$$ = valueEvaluation($1, $3, GT_OP);
         }
     | expr EQUAL_TOKEN expr     {
-            $$ = NULL;
+            $$ = getExpressionNode(EQUAL_OP, $1, $3);
             //$$ = valueEvaluation($1, $3, EQUAL_OP);
         }
     | expr LTE_TOKEN expr       {
-            $$ = NULL;
+            $$ = getExpressionNode(LTE_OP, $1, $3);
             //$$ = valueEvaluation($1, $3, LTE_OP);
         }
     | expr GTE_TOKEN expr       {
-            $$ = NULL;
+            $$ = getExpressionNode(GTE_OP, $1, $3);
             //$$ = valueEvaluation($1, $3, GTE_OP);
         }
 ;

@@ -19,6 +19,7 @@ variable * symbol_table;
 #define WHILE_NODE 9
 #define FOR_NODE 10
 #define TERM_NODE 11
+#define EXPRESSION_NODE 12
 
 
 struct treeNode {
@@ -55,6 +56,21 @@ struct termNode {
     tree_node * term;
     tree_node * factor;
 }typedef term_node;
+struct expressionNode {
+    int condition;
+    tree_node * left;
+    tree_node * right;
+}typedef expression_node;
+struct ifNode {
+    tree_node * condition;
+    tree_node * statement;
+}typedef if_node;
+struct ifElseNode{
+    tree_node * condition;
+    tree_node * if_statement;
+    tree_node * else_statement;
+}typedef if_else_node;
+
 
 union node {
     id_node * id;
@@ -64,6 +80,9 @@ union node {
     set_node * set;
     expr_node* expr;
     term_node* term;
+    expression_node* expression;
+    if_node * if_;
+    if_else_node * if_else;
 } typedef instruction;
 
 
@@ -76,12 +95,13 @@ struct treeNode * reverseSyntaxTree(struct treeNode *);
 struct treeNode * getNewNode(int, union node *, struct treeNode *);
 struct treeNode * getExprNode(int, struct treeNode *, struct treeNode *);
 struct treeNode * getTermNode(int, struct treeNode *, struct treeNode *);
+struct treeNode * getExpressionNode(int, struct treeNode *, struct treeNode *);
+struct treeNode * getIfElseNode(struct treeNode *, struct treeNode *, struct treeNode *);
+struct treeNode * getSetNode(struct treeNode *, struct treeNode *);
+struct treeNode * getIfNode(struct treeNode *, struct treeNode *);
 struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(variable_value *);
 struct treeNode * getIdNode(variable *);
-
-
-struct treeNode * getSetNode(struct treeNode *, struct treeNode *);
 
 void printSyntaxTree(struct treeNode *);

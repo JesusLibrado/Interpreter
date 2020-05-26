@@ -6,6 +6,9 @@ program seis
 {
   read x;
   set y 1 + x;
-  print y + 1;
-  print x + 2;
+  ifelse (x<y){
+    print y + 1;
+  }{
+    print x + 2;
+  }
 }

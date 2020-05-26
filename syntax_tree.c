@@ -10,6 +10,31 @@ struct treeNode * getNewNode(int type, instruction * instr, tree_node *nextTreeN
     return newTreeNode;
 }
 
+struct treeNode * getIfElseNode(struct treeNode * cond, struct treeNode * i_stmt, struct treeNode * e_stmt){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->if_else = (struct ifElseNode *)malloc(sizeof(struct ifElseNode));
+    newInstr->if_else->condition = NULL;
+    newInstr->if_else->condition = cond;
+    newInstr->if_else->if_statement = NULL;
+    newInstr->if_else->if_statement = i_stmt;
+    newInstr->if_else->else_statement = NULL;
+    newInstr->if_else->else_statement = e_stmt;
+
+    return getNewNode(IFELSE_NODE, newInstr, NULL);
+}
+
+struct treeNode * getIfNode(struct treeNode * cond, struct treeNode * stmt){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->if_ = (struct ifNode *)malloc(sizeof(struct ifNode));
+    newInstr->if_->condition = NULL;
+    newInstr->if_->condition = cond;
+    newInstr->if_->statement = NULL;
+    newInstr->if_->statement = stmt;
+
+    return getNewNode(IF_NODE, newInstr, NULL);
+}
 
 struct treeNode * getSetNode(struct treeNode * var, struct treeNode * e){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
@@ -34,6 +59,19 @@ struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
     newInstr->expr->term = t;
 
     return getNewNode(EXPR_NODE, newInstr, NULL);
+}
+
+struct treeNode * getExpressionNode(int cond, struct treeNode * l, struct treeNode * r){
+    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+
+    newInstr->expression = (struct expressionNode *)malloc(sizeof(struct expressionNode));
+    newInstr->expression->condition = cond;
+    newInstr->expression->left = NULL;
+    newInstr->expression->left = l;
+    newInstr->expression->right = NULL;
+    newInstr->expression->right = r;
+
+    return getNewNode(EXPRESSION_NODE, newInstr, NULL);
 }
 struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
@@ -117,6 +155,26 @@ void printSyntaxTree(struct treeNode *root){
                 printSyntaxTree(root->node->term->term);
                 printf("(-- op --)\n");
                 printSyntaxTree(root->node->term->factor);
+            break;
+        case EXPRESSION_NODE:
+                printf("[Expression]----\n");
+                printSyntaxTree(root->node->expression->left);
+                printf("(-- cond --)\n");
+                printSyntaxTree(root->node->expression->right);
+            break;
+        case IF_NODE:
+                printf("[If]----\n\t");
+                printSyntaxTree(root->node->if_->condition);
+                printf("(-- stmt --)\n");
+                printSyntaxTree(root->node->if_->statement);
+            break;
+        case IFELSE_NODE:
+                printf("[If Else]----\n");
+                printSyntaxTree(root->node->if_else->condition);
+                printf("(-- if stmt --)\n");
+                printSyntaxTree(root->node->if_else->if_statement);
+                printf("(-- else stmt --)\n");
+                printSyntaxTree(root->node->if_else->else_statement);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }
