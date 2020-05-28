@@ -5,7 +5,7 @@ void executeRead(struct treeNode * root){
     variable_value * val = var->value;
     if(val->type == TYPE_INT){
         int newValue;
-        scanf("%d", &newValue);
+        scanf(" %d", &newValue);
         val->value.int_val = newValue;
         if(!newValue){
             printf("Error: variable type mismatch\n");
@@ -13,7 +13,7 @@ void executeRead(struct treeNode * root){
     }
     if(val->type == TYPE_FLOAT){
         float newValue;
-        scanf("%f", &newValue);
+        scanf(" %f", &newValue);
         val->value.float_val = newValue;
         if(!newValue){
             printf("Error: variable type mismatch\n");

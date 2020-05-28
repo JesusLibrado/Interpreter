@@ -6,6 +6,11 @@
     #include "symbol_table.h"
     #include "syntax_tree.h"
     #include "interpreter.h"
+
+    extern FILE * yyin;
+    extern int yylineno;
+    extern char * yytext;
+
     int yylex(void);
     void yyerror(char *);
 
@@ -15,6 +20,7 @@
     void variable_declaration_error(char *id);
     void variable_input_error(char *id);
     void variable_operation_mismatch(char *id);
+
 
 %}
 
@@ -210,13 +216,14 @@ void variable_input_error(char *id){
 }
 
 void yyerror(char *s) {
-    fprintf(stdout, "%s\n", s);
+    fprintf(stdout, "%s at line %d\n", s, yylineno);
 }
 
 int main(int argc, char **argv) {
-    if(argc >= 2) {
-	    freopen(argv[1], "r", stdin);
-	}
+    if ((yyin = fopen(argv[1], "r")) == NULL) {
+        printf("Failed to open file.\n");
+        return 1;
+    }
     int parse = yyparse();
     displaySymbolTable(head);
     symbol_table = head;
