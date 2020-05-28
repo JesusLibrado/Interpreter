@@ -3,11 +3,12 @@
 void executeRead(struct treeNode * root){
     variable * var = root->node->id->symbol;
     variable_value * val = var->value;
+    printf("%s: ", var->identifier);
     if(val->type == TYPE_INT){
         int newValue;
         scanf(" %d", &newValue);
         val->value.int_val = newValue;
-        if(!newValue){
+        if(!setVariableValue(var, val)){
             printf("Error: variable type mismatch\n");
         }
     }
@@ -15,7 +16,7 @@ void executeRead(struct treeNode * root){
         float newValue;
         scanf(" %f", &newValue);
         val->value.float_val = newValue;
-        if(!newValue){
+        if(!setVariableValue(var, val)){
             printf("Error: variable type mismatch\n");
         }
     }
