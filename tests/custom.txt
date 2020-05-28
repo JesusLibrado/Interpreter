@@ -6,19 +6,5 @@ program seis
 }
 {
   read x;
-  set y 1 + x;
-  ifelse (x<y){
-    print y + 1;
-  }{
-    print x + 2;
-  }
-
-  while(x>y){
-    print x;
-  }
-
-  for set z 1 to z<10 step 1 do{
-    print z;
-  }
 
 }

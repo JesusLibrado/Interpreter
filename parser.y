@@ -5,6 +5,7 @@
     #include "value.h"
     #include "symbol_table.h"
     #include "syntax_tree.h"
+    #include "interpreter.h"
     int yylex(void);
     void yyerror(char *);
 
@@ -104,26 +105,6 @@ assign_stmt:
         }
         struct treeNode * id_node = getIdNode(getVariable(head, $2));
         $$ = getReadNode(id_node);
-        // struct variableValue *val = getVariableValue(head, $2);
-        // printf("Type %s: ", $2 );
-        // if(val->type == TYPE_INT){
-        //     int newValue;
-        //     scanf("%d", &newValue);
-        //     val->value.int_val = newValue;
-        //     if(!setVariableValue(head, $2, val)){
-        //         variable_input_error($2);
-        //         YYERROR;
-        //     }
-        // }
-        // if(val->type == TYPE_FLOAT){
-        //     float newValue;
-        //     scanf("%f", &newValue);
-        //     val->value.float_val = newValue;
-        //     if(!setVariableValue(head, $2, val)){
-        //         variable_input_error($2);
-        //         YYERROR;
-        //     }
-        // }
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
@@ -240,7 +221,8 @@ int main(int argc, char **argv) {
     displaySymbolTable(head);
     symbol_table = head;
     syntax_tree = reverseSyntaxTree(tree);
-    printSyntaxTree(syntax_tree);
+    //printSyntaxTree(syntax_tree);
+    execute(syntax_tree);
     //free_table();
     return 0;
 }

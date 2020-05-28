@@ -1,3 +1,5 @@
+#ifndef _TREE_HEADER_
+#define _TREE_HEADER_
 
 #include "value.h"
 #include "symbol_table.h"
@@ -99,9 +101,9 @@ union node {
 
 
 
-
-
 tree_node * syntax_tree;
+
+
 
 struct treeNode * reverseSyntaxTree(struct treeNode *);
 struct treeNode * getNewNode(int, union node *, struct treeNode *);
@@ -125,3 +127,5 @@ struct treeNode * getForNode(
 );
 
 void printSyntaxTree(struct treeNode *);
+
+#endif
