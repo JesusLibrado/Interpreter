@@ -66,8 +66,20 @@ void executeWhile(struct treeNode * root){
     }
 }
 
+void executeFor(struct treeNode * root){
+    tree_node * set = getSetNode(root->node->for_->id, root->node->for_->id_value);
+    for(
+        executeSet(set); 
+        executeExpression(root->node->for_->to);
+        setVariableValue(root->node->for_->id->node->id->symbol, executeExpr(root->node->for_->step))
+    ){
+        execute(root->node->for_->do_);
+    }
+}
+
 void executePrint(struct treeNode * root){
     printValue(executeExpr(root));
+    printf("\n");
 }
 
 void executeRead(struct treeNode * root){
@@ -123,16 +135,7 @@ void execute(struct treeNode *root){
                 executeWhile(root);
             break;
         case FOR_NODE:
-                printf("[For]----\n");
-                // printSyntaxTree(root->node->for_->id);
-                // printf("(-- init at --)\n");
-                // printSyntaxTree(root->node->for_->id_value);
-                // printf("(-- to --)\n");
-                // printSyntaxTree(root->node->for_->to);
-                // printf("(-- step --)\n");
-                // printSyntaxTree(root->node->for_->step);
-                // printf("(-- do --)\n");
-                // printSyntaxTree(root->node->for_->do_);
+                executeFor(root);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }

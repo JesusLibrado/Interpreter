@@ -15,6 +15,7 @@ void executeSet(struct treeNode *);
 void executeIf(struct treeNode *);
 void executeIfElse(struct treeNode *);
 void executeWhile(struct treeNode *);
+void executeFor(struct treeNode *);
 variable_value * executeExpr(struct treeNode *);
 variable_value * executeTerm(struct treeNode *);
 variable_value * executeFactor(struct treeNode *);
