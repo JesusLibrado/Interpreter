@@ -46,6 +46,12 @@ bool executeExpression(struct treeNode * root){
     );
 }
 
+void executeIf(struct treeNode * root){
+    if(executeExpression(root->node->if_->condition)){
+        execute(root->node->if_->statement);
+    }
+}
+
 void executePrint(struct treeNode * root){
     printValue(executeExpr(root));
 }
@@ -95,9 +101,7 @@ void execute(struct treeNode *root){
             break;
         case IF_NODE:
                 printf("[If]----\n");
-                // printSyntaxTree(root->node->if_->condition);
-                // printf("(-- stmt --)\n");
-                // printSyntaxTree(root->node->if_->statement);
+                executeIf(root);
             break;
         case IFELSE_NODE:
                 printf("[If Else]----\n");

@@ -7,8 +7,8 @@ program seis
 {
   read x;
   set y x;
-  if(x==1){
+  if(x>10){
     set y 2;
   }
-  print y y+1;
+  print y;
 }
