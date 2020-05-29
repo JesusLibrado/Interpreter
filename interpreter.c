@@ -1,7 +1,6 @@
 #include "interpreter.h"
 
 variable_value * executeFactor(struct treeNode * root) {
-    printf("[factor]----\n");
     if(root->nodetype == IDENTIFIER_NODE)
         return root->node->id->symbol->value;
     if(root->nodetype == VALUE_NODE)
@@ -13,11 +12,9 @@ variable_value * executeTerm(struct treeNode * root){
     term_node * current = root->node->term;
     switch (current->operation){
         case MULTIPLICATION_OP:
-                printf(" -- * -- \n");
                 return valueOperation(executeTerm(current->term), executeFactor(current->factor),  MULTIPLICATION_OP);
             break;
         case DIVISION_OP:
-                printf(" -- / -- \n");
                 return valueOperation(executeTerm(current->term), executeFactor(current->factor),  DIVISION_OP);
             break;
         default:
@@ -30,11 +27,9 @@ variable_value * executeExpr(struct treeNode * root){
     expr_node * expr = root->node->expr;
     switch (expr->operation){
         case ADDITION_OP:
-                printf(" -- + -- \n");
                 return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  ADDITION_OP);
             break;
         case SUBSTRACTION_OP:
-                printf(" -- - -- \n");
                 return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  SUBSTRACTION_OP);
             break;
         default:
@@ -69,6 +64,16 @@ void executeRead(struct treeNode * root){
         }
     }
 }
+
+void executeSet(struct treeNode * root){
+    id_node * id = root->node->set->id->node->id;
+    tree_node * expr = root->node->set->expr;
+    variable * var = id->symbol;
+    if(!setVariableValue(var, executeExpr(expr))){
+        printf("Error: variable type mismatch\n");
+    }
+}
+
 void execute(struct treeNode *root){
     if(root==NULL) {return;}
     switch(root->nodetype) {
@@ -78,8 +83,7 @@ void execute(struct treeNode *root){
             break;
         case SET_NODE:
                 printf("[Set]----\n");
-                // printSyntaxTree(root->node->set->id);
-                // printSyntaxTree(root->node->set->expr);
+                executeSet(root);
             break;
         case PRINT_NODE:
                 printf("[Print]----\n");

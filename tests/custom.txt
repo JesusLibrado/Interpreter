@@ -6,5 +6,6 @@ program seis
 }
 {
   read x;
+  set y 2.0;
   print (x + 1) * 2;
 }

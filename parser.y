@@ -226,8 +226,9 @@ int main(int argc, char **argv) {
     symbol_table = head;
     syntax_tree = reverseSyntaxTree(tree);
     execute(syntax_tree);
-    printf("\n---------\n");
-    printSyntaxTree(syntax_tree);
+    /* printf("\n---------\n");
+    printSyntaxTree(syntax_tree); */
+    displaySymbolTable(symbol_table);
     //free_table();
     return 0;
 }
