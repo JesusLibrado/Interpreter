@@ -1,5 +1,53 @@
 #include "interpreter.h"
 
+variable_value * executeFactor(struct treeNode * root) {
+    printf("[factor]----\n");
+    if(root->nodetype == IDENTIFIER_NODE)
+        return root->node->id->symbol->value;
+    if(root->nodetype == VALUE_NODE)
+        return root->node->value->val;
+    return executeExpr(root);
+}
+
+variable_value * executeTerm(struct treeNode * root){
+    term_node * current = root->node->term;
+    switch (current->operation){
+        case MULTIPLICATION_OP:
+                printf(" -- * -- \n");
+                return valueOperation(executeTerm(current->term), executeFactor(current->factor),  MULTIPLICATION_OP);
+            break;
+        case DIVISION_OP:
+                printf(" -- / -- \n");
+                return valueOperation(executeTerm(current->term), executeFactor(current->factor),  DIVISION_OP);
+            break;
+        default:
+            break;
+    }
+    return executeFactor(root);
+}
+
+variable_value * executeExpr(struct treeNode * root){
+    expr_node * expr = root->node->expr;
+    switch (expr->operation){
+        case ADDITION_OP:
+                printf(" -- + -- \n");
+                return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  ADDITION_OP);
+            break;
+        case SUBSTRACTION_OP:
+                printf(" -- - -- \n");
+                return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  SUBSTRACTION_OP);
+            break;
+        default:
+            break;
+    }
+    return executeTerm(root);
+}   
+
+
+void executePrint(struct treeNode * root){
+    printValue(executeExpr(root));
+}
+
 void executeRead(struct treeNode * root){
     variable * var = root->node->id->symbol;
     variable_value * val = var->value;
@@ -21,11 +69,6 @@ void executeRead(struct treeNode * root){
         }
     }
 }
-
-void executePrint(struct treeNode * root){
-
-}
-
 void execute(struct treeNode *root){
     if(root==NULL) {return;}
     switch(root->nodetype) {
@@ -40,13 +83,7 @@ void execute(struct treeNode *root){
             break;
         case PRINT_NODE:
                 printf("[Print]----\n");
-                // printSyntaxTree(root->node->print->expr);
-            break;
-        case EXPR_NODE:
-                printf("[Expr]----\n");
-                // printSyntaxTree(root->node->expr->expr);
-                // printf("(-- op --)\n");
-                // printSyntaxTree(root->node->expr->term);
+                executePrint(root->node->print->expr);
             break;
         case TERM_NODE:
                 printf("[Term]----\n");

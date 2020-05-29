@@ -11,3 +11,7 @@ void execute(struct treeNode *);
 
 void executeRead(struct treeNode *);
 void executePrint(struct treeNode *);
+variable_value * executeExpr(struct treeNode *);
+variable_value * executeTerm(struct treeNode *);
+variable_value * executeFactor(struct treeNode *);
+bool executeExpression(struct treeNode *);

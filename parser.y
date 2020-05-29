@@ -102,7 +102,6 @@ assign_stmt:
         // }
         struct treeNode * id_node = getIdNode(getVariable(head, $2));
         $$ = getSetNode(id_node, $3);
-        //getNewSetNode(getVariable(head, $2), $3);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
         if(!variableHasBeenDeclared(head, $2)){
@@ -148,11 +147,9 @@ stmt_lst:
 expr: 
     expr ADDITION_TOKEN term        {
             $$ = getExprNode(ADDITION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, ADDITION_OP);
         }
     | expr SUBSTRACTION_TOKEN term  {
             $$ = getExprNode(SUBSTRACTION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, SUBSTRACTION_OP);
         }
     | term                          {
             $$ = $1;
@@ -172,7 +169,7 @@ term:
 ;
 
 factor: 
-    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
+    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = reverseSyntaxTree($2);}
     | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
@@ -228,8 +225,9 @@ int main(int argc, char **argv) {
     displaySymbolTable(head);
     symbol_table = head;
     syntax_tree = reverseSyntaxTree(tree);
-    //printSyntaxTree(syntax_tree);
     execute(syntax_tree);
+    printf("\n---------\n");
+    printSyntaxTree(syntax_tree);
     //free_table();
     return 0;
 }
