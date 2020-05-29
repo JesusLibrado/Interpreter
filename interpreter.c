@@ -52,6 +52,20 @@ void executeIf(struct treeNode * root){
     }
 }
 
+void executeIfElse(struct treeNode * root){
+    if(executeExpression(root->node->if_else->condition)){
+        execute(root->node->if_else->if_statement);
+    } else {
+        execute(root->node->if_else->else_statement);
+    }
+}
+
+void executeWhile(struct treeNode * root){
+    while(executeExpression(root->node->while_->condition)){
+        execute(root->node->while_->statement);
+    }
+}
+
 void executePrint(struct treeNode * root){
     printValue(executeExpr(root));
 }
@@ -100,22 +114,13 @@ void execute(struct treeNode *root){
                 executePrint(root->node->print->expr);
             break;
         case IF_NODE:
-                printf("[If]----\n");
                 executeIf(root);
             break;
         case IFELSE_NODE:
-                printf("[If Else]----\n");
-                // printSyntaxTree(root->node->if_else->condition);
-                // printf("(-- if stmt --)\n");
-                // printSyntaxTree(root->node->if_else->if_statement);
-                // printf("(-- else stmt --)\n");
-                // printSyntaxTree(root->node->if_else->else_statement);
+                executeIfElse(root);
             break;
         case WHILE_NODE:
-                printf("[While]----\n");
-                // printSyntaxTree(root->node->while_->condition);
-                // printf("(-- stmt --)\n");
-                // printSyntaxTree(root->node->while_->statement);
+                executeWhile(root);
             break;
         case FOR_NODE:
                 printf("[For]----\n");

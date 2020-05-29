@@ -159,11 +159,9 @@ expr:
 term:
     term MULTIPLICATION_TOKEN factor    {
             $$ = getTermNode(MULTIPLICATION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, MULTIPLICATION_OP);
         }
     | term DIVISION_TOKEN factor        {
-            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);;
-            //$$ = valueOperation($1, $3, DIVISION_OP);
+            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);
         }
     | factor                            {$$ = $1;}
 ;
@@ -178,23 +176,18 @@ factor:
 expression: 
     expr LT_TOKEN expr          {
             $$ = getExpressionNode(LT_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, LT_OP);
         }
     | expr GT_TOKEN expr        {
             $$ = getExpressionNode(GT_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, GT_OP);
         }
     | expr EQUAL_TOKEN expr     {
             $$ = getExpressionNode(EQUAL_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, EQUAL_OP);
         }
     | expr LTE_TOKEN expr       {
             $$ = getExpressionNode(LTE_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, LTE_OP);
         }
     | expr GTE_TOKEN expr       {
             $$ = getExpressionNode(GTE_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, GTE_OP);
         }
 ;
 
