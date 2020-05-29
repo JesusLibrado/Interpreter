@@ -38,6 +38,13 @@ variable_value * executeExpr(struct treeNode * root){
     return executeTerm(root);
 }   
 
+bool executeExpression(struct treeNode * root){
+    return valueEvaluation(
+        executeExpr(root->node->expression->left), 
+        executeExpr(root->node->expression->right), 
+        root->node->expression->condition
+    );
+}
 
 void executePrint(struct treeNode * root){
     printValue(executeExpr(root));
@@ -78,28 +85,13 @@ void execute(struct treeNode *root){
     if(root==NULL) {return;}
     switch(root->nodetype) {
         case READ_NODE:
-                printf("[Read]----\n");
                 executeRead(root->node->read->id);
             break;
         case SET_NODE:
-                printf("[Set]----\n");
                 executeSet(root);
             break;
         case PRINT_NODE:
-                printf("[Print]----\n");
                 executePrint(root->node->print->expr);
-            break;
-        case TERM_NODE:
-                printf("[Term]----\n");
-                // printSyntaxTree(root->node->term->term);
-                // printf("(-- op --)\n");
-                // printSyntaxTree(root->node->term->factor);
-            break;
-        case EXPRESSION_NODE:
-                printf("[Expression]----\n");
-                // printSyntaxTree(root->node->expression->left);
-                // printf("(-- cond --)\n");
-                // printSyntaxTree(root->node->expression->right);
             break;
         case IF_NODE:
                 printf("[If]----\n");

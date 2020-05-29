@@ -12,6 +12,7 @@ void execute(struct treeNode *);
 void executeRead(struct treeNode *);
 void executePrint(struct treeNode *);
 void executeSet(struct treeNode *);
+void executeIf(struct treeNode *);
 variable_value * executeExpr(struct treeNode *);
 variable_value * executeTerm(struct treeNode *);
 variable_value * executeFactor(struct treeNode *);

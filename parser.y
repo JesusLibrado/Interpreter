@@ -222,7 +222,6 @@ int main(int argc, char **argv) {
         return 1;
     }
     int parse = yyparse();
-    displaySymbolTable(head);
     symbol_table = head;
     syntax_tree = reverseSyntaxTree(tree);
     execute(syntax_tree);
