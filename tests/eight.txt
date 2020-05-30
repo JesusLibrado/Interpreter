@@ -2,22 +2,20 @@ program eight
 {
    var x : int;
    var y : int;
-   var zz: int
+   var z: int
 }
 {
    read x;
    read y;
 
-   if (y < x)
-   {
+   if (y < x){
      set z x;
      set x y;
      set y z;
    }
 
    set z 0;
-   while (x < y) do
-   {
+   while (x < y){
      set z z + y;
      set x x + 1;
    }

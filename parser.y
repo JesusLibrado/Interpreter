@@ -5,6 +5,12 @@
     #include "value.h"
     #include "symbol_table.h"
     #include "syntax_tree.h"
+    #include "interpreter.h"
+
+    extern FILE * yyin;
+    extern int yylineno;
+    extern char * yytext;
+
     int yylex(void);
     void yyerror(char *);
 
@@ -14,6 +20,7 @@
     void variable_declaration_error(char *id);
     void variable_input_error(char *id);
     void variable_operation_mismatch(char *id);
+
 
 %}
 
@@ -95,7 +102,6 @@ assign_stmt:
         // }
         struct treeNode * id_node = getIdNode(getVariable(head, $2));
         $$ = getSetNode(id_node, $3);
-        //getNewSetNode(getVariable(head, $2), $3);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
         if(!variableHasBeenDeclared(head, $2)){
@@ -104,26 +110,6 @@ assign_stmt:
         }
         struct treeNode * id_node = getIdNode(getVariable(head, $2));
         $$ = getReadNode(id_node);
-        // struct variableValue *val = getVariableValue(head, $2);
-        // printf("Type %s: ", $2 );
-        // if(val->type == TYPE_INT){
-        //     int newValue;
-        //     scanf("%d", &newValue);
-        //     val->value.int_val = newValue;
-        //     if(!setVariableValue(head, $2, val)){
-        //         variable_input_error($2);
-        //         YYERROR;
-        //     }
-        // }
-        // if(val->type == TYPE_FLOAT){
-        //     float newValue;
-        //     scanf("%f", &newValue);
-        //     val->value.float_val = newValue;
-        //     if(!setVariableValue(head, $2, val)){
-        //         variable_input_error($2);
-        //         YYERROR;
-        //     }
-        // }
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
@@ -161,11 +147,9 @@ stmt_lst:
 expr: 
     expr ADDITION_TOKEN term        {
             $$ = getExprNode(ADDITION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, ADDITION_OP);
         }
     | expr SUBSTRACTION_TOKEN term  {
             $$ = getExprNode(SUBSTRACTION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, SUBSTRACTION_OP);
         }
     | term                          {
             $$ = $1;
@@ -175,17 +159,15 @@ expr:
 term:
     term MULTIPLICATION_TOKEN factor    {
             $$ = getTermNode(MULTIPLICATION_OP, $1, $3);
-            //$$ = valueOperation($1, $3, MULTIPLICATION_OP);
         }
     | term DIVISION_TOKEN factor        {
-            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);;
-            //$$ = valueOperation($1, $3, DIVISION_OP);
+            $$ = $$ = getTermNode(DIVISION_OP, $1, $3);
         }
     | factor                            {$$ = $1;}
 ;
 
 factor: 
-    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = $2;}
+    OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = reverseSyntaxTree($2);}
     | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
@@ -194,23 +176,18 @@ factor:
 expression: 
     expr LT_TOKEN expr          {
             $$ = getExpressionNode(LT_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, LT_OP);
         }
     | expr GT_TOKEN expr        {
             $$ = getExpressionNode(GT_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, GT_OP);
         }
     | expr EQUAL_TOKEN expr     {
             $$ = getExpressionNode(EQUAL_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, EQUAL_OP);
         }
     | expr LTE_TOKEN expr       {
             $$ = getExpressionNode(LTE_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, LTE_OP);
         }
     | expr GTE_TOKEN expr       {
             $$ = getExpressionNode(GTE_OP, $1, $3);
-            //$$ = valueEvaluation($1, $3, GTE_OP);
         }
 ;
 
@@ -229,18 +206,20 @@ void variable_input_error(char *id){
 }
 
 void yyerror(char *s) {
-    fprintf(stdout, "%s\n", s);
+    fprintf(stdout, "%s at line %d\n", s, yylineno);
 }
 
 int main(int argc, char **argv) {
-    if(argc >= 2) {
-	    freopen(argv[1], "r", stdin);
-	}
+    if ((yyin = fopen(argv[1], "r")) == NULL) {
+        printf("Failed to open file.\n");
+        return 1;
+    }
     int parse = yyparse();
-    displaySymbolTable(head);
     symbol_table = head;
     syntax_tree = reverseSyntaxTree(tree);
-    printSyntaxTree(syntax_tree);
+    execute(syntax_tree);
+    printf("\n");
+    displaySymbolTable(symbol_table);
     //free_table();
     return 0;
 }

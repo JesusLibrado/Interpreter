@@ -16,13 +16,12 @@ struct tableNode* getVariable(struct tableNode *head, char* id){
     return getVariable(head->next, id);
 }
 
-bool setVariableValue(struct tableNode *head, char* id, variable_value *newValue) {
-    if(typesMatch(getVariableValue(head, id), newValue)){
-        struct tableNode *p = getVariable(head, id);
-        if(!p){
+bool setVariableValue(variable* id, variable_value *newValue) {
+    if(typesMatch(id->value, newValue)){
+        if(!id){
             return false;
         }else {
-            p->value = newValue;
+            id->value = newValue;
             return true;
         }
     }

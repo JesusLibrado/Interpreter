@@ -1,24 +1,14 @@
 program seis
 {
   var x : int;
-  var y : float;
+  var y : int;
   var z : int
 }
 {
   read x;
-  set y 1 + x;
-  ifelse (x<y){
-    print y + 1;
-  }{
-    print x + 2;
-  }
-
-  while(x>y){
+  set y x;
+  for set x 1 to x < 5 step x + 1 do {
     print x;
   }
-
-  for set z 1 to z<10 step 1 do{
-    print z;
-  }
-
+  print y;
 }
