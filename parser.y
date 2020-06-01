@@ -27,7 +27,7 @@
     int var_type;
     bool boolean;
     char *identifier;
-    struct variableValue* value;
+    struct value* value;
     struct treeNode* node;
 }
 
@@ -194,12 +194,10 @@ expression:
 /********* EPILOGUE *********/
 
 void variable_declaration_error(char *id){
-    printf("Error: %s was already declared or was not found\n", id);
-    
+    printf("Error: %s was already declared or was not found\n", id);   
 }
 void variable_input_error(char *id){
     printf("Error: %s input mismatch\n", id);
-    
 }
 
 void yyerror(char *s) {

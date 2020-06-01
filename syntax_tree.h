@@ -23,6 +23,12 @@ struct tableNode * symbol_table;
 #define EXPRESSION_NODE 12
 
 
+/**
+ * This is the most basic node of the syntax tree
+ * @param nodetype: int             It specifies what kind of node this is
+ * @param node: union node *        A pointer to the its child branch
+ * @param next: struct treeNode *   A pointer to the next tree node
+ */
 struct treeNode {
     int nodetype;
     union node * node;
@@ -30,12 +36,22 @@ struct treeNode {
 };
 
 
-
+/**
+ * This is a compound leaf of the tree
+ * It contains a pointer to an Identifier
+ * @param symbol: struct tableNode *    Stores a variable declared in the symbot table
+ */
 struct idNode {
     struct tableNode * symbol;
 }typedef id_node;
+
+/**
+ * This is a simple leaf of the tree
+ * It contains a pointer to a value
+ * @param symbol: struct value *    Stores a value 
+ */
 struct valueNode{
-    struct variableValue * val;
+    struct value * val;
 }typedef value_node;
 struct readNode {
     struct treeNode * id;
@@ -112,7 +128,7 @@ struct treeNode * getIfNode(struct treeNode *, struct treeNode *);
 struct treeNode * getWhileNode(struct treeNode *, struct treeNode *);
 struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
-struct treeNode * getValueNode(struct variableValue *);
+struct treeNode * getValueNode(struct value *);
 struct treeNode * getIdNode(struct tableNode *);
 struct treeNode * getForNode(
     struct treeNode *,

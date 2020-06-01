@@ -1,28 +1,28 @@
 #include "value.h"
 
-char * getTypeAsString(struct variableValue *value){
+char * getTypeAsString(struct value *value){
     return (value->type == TYPE_INT)?"int":"float";
 }
 
-struct variableValue* getInteger(int newInt) {
-    struct variableValue *newValue = (struct variableValue *)malloc(sizeof(struct variableValue));
+struct value* getInteger(int newInt) {
+    struct value *newValue = (struct value *)malloc(sizeof(struct value));
     newValue->type = TYPE_INT;
     newValue->value.int_val = newInt;
     return newValue;
 }
 
-struct variableValue* getFloat(float newFloat) {
-    struct variableValue *newValue = (struct variableValue *)malloc(sizeof(struct variableValue));
+struct value* getFloat(float newFloat) {
+    struct value *newValue = (struct value *)malloc(sizeof(struct value));
     newValue->type = TYPE_FLOAT;
     newValue->value.float_val = newFloat;
     return newValue;
 }
 
-bool typesMatch(struct variableValue *v1, struct variableValue *v2){
+bool typesMatch(struct value *v1, struct value *v2){
     return (v1->type == v2->type);
 }
 
-bool valueEvaluation(struct variableValue *v1, struct variableValue *v2, int condition){
+bool valueEvaluation(struct value *v1, struct value *v2, int condition){
     if(!typesMatch(v1, v2)) return false;
 
     if(v1->type == TYPE_INT){
@@ -61,7 +61,7 @@ bool valueEvaluation(struct variableValue *v1, struct variableValue *v2, int con
     }
 }
 
-struct variableValue * valueOperation(struct variableValue *v1, struct variableValue *v2, int operation){
+struct value * valueOperation(struct value *v1, struct value *v2, int operation){
     if(!typesMatch(v1, v2)) return getInteger(0);
 
     if(v1->type == TYPE_INT){
@@ -100,7 +100,7 @@ struct variableValue * valueOperation(struct variableValue *v1, struct variableV
     }
 }
 
-void printValue(struct variableValue * v){
+void printValue(struct value * v){
     if(v->type ==TYPE_INT){
         int value = v->value.int_val;
         printf("%d", value);

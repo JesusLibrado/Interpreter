@@ -20,7 +20,7 @@
 #define EQUAL_OP            190
 
 
-struct variableValue {
+struct value {
     int type;
     union {
         int int_val;
@@ -28,12 +28,12 @@ struct variableValue {
     } value;
 };
 
-char * getTypeAsString(struct variableValue *);
-void printValue(struct variableValue *);
-struct variableValue * getInteger(int);
-struct variableValue * getFloat(float);
-struct variableValue * valueOperation(struct variableValue *, struct variableValue *, int);
-bool typesMatch(struct variableValue *, struct variableValue *);
-bool valueEvaluation(struct variableValue *, struct variableValue *, int);
+char * getTypeAsString(struct value *);
+void printValue(struct value *);
+struct value * getInteger(int);
+struct value * getFloat(float);
+struct value * valueOperation(struct value *, struct value *, int);
+bool typesMatch(struct value *, struct value *);
+bool valueEvaluation(struct value *, struct value *, int);
 
 #endif

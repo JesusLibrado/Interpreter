@@ -1,6 +1,34 @@
 #include "interpreter.h"
 
-struct variableValue * executeFactor(struct treeNode * root) {
+void execute(struct treeNode *root){
+    if(root==NULL) {return;}
+    switch(root->nodetype) {
+        case READ_NODE:
+                executeRead(root);
+            break;
+        case SET_NODE:
+                executeSet(root);
+            break;
+        case PRINT_NODE:
+                executePrint(root);
+            break;
+        case IF_NODE:
+                executeIf(root);
+            break;
+        case IFELSE_NODE:
+                executeIfElse(root);
+            break;
+        case WHILE_NODE:
+                executeWhile(root);
+            break;
+        case FOR_NODE:
+                executeFor(root);
+            break;
+        default: printf("ERROR: unknown root type \n"); break;
+    }
+    execute(root->next);
+}
+struct value * executeFactor(struct treeNode * root) {
     if(root->nodetype == IDENTIFIER_NODE)
         return root->node->id->symbol->value;
     if(root->nodetype == VALUE_NODE)
@@ -8,14 +36,22 @@ struct variableValue * executeFactor(struct treeNode * root) {
     return executeExpr(root);
 }
 
-struct variableValue * executeTerm(struct treeNode * root){
+struct value * executeTerm(struct treeNode * root){
     term_node * current = root->node->term;
     switch (current->operation){
         case MULTIPLICATION_OP:
-                return valueOperation(executeTerm(current->term), executeFactor(current->factor),  MULTIPLICATION_OP);
+                return valueOperation(
+                    executeTerm(current->term), 
+                    executeFactor(current->factor),  
+                    MULTIPLICATION_OP
+                );
             break;
         case DIVISION_OP:
-                return valueOperation(executeTerm(current->term), executeFactor(current->factor),  DIVISION_OP);
+                return valueOperation(
+                    executeTerm(current->term), 
+                    executeFactor(current->factor),  
+                    DIVISION_OP
+                );
             break;
         default:
             break;
@@ -23,14 +59,22 @@ struct variableValue * executeTerm(struct treeNode * root){
     return executeFactor(root);
 }
 
-struct variableValue * executeExpr(struct treeNode * root){
+struct value * executeExpr(struct treeNode * root){
     expr_node * expr = root->node->expr;
     switch (expr->operation){
         case ADDITION_OP:
-                return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  ADDITION_OP);
+                return valueOperation(
+                    executeExpr(expr->expr), 
+                    executeTerm(expr->term),  
+                    ADDITION_OP
+                );
             break;
         case SUBSTRACTION_OP:
-                return valueOperation(executeExpr(expr->expr), executeTerm(expr->term),  SUBSTRACTION_OP);
+                return valueOperation(
+                    executeExpr(expr->expr), 
+                    executeTerm(expr->term),  
+                    SUBSTRACTION_OP
+                );
             break;
         default:
             break;
@@ -67,24 +111,32 @@ void executeWhile(struct treeNode * root){
 }
 
 void executeFor(struct treeNode * root){
-    struct treeNode * set = getSetNode(root->node->for_->id, root->node->for_->id_value);
+    struct treeNode * set = getSetNode(
+        root->node->for_->id, 
+        root->node->for_->id_value
+    );
+    struct tableNode * var = root->node->for_->id->node->id->symbol;
     for(
         executeSet(set); 
         executeExpression(root->node->for_->to);
-        setVariableValue(root->node->for_->id->node->id->symbol, executeExpr(root->node->for_->step))
+        setVariableValue(
+            var, 
+            executeExpr(root->node->for_->step)
+        )
     ){
         execute(root->node->for_->do_);
     }
 }
 
 void executePrint(struct treeNode * root){
-    printValue(executeExpr(root));
+    printValue(executeExpr(root->node->print->expr));
     printf("\n");
 }
 
 void executeRead(struct treeNode * root){
-    struct tableNode * var = root->node->id->symbol;
-    struct variableValue * val = var->value;
+    struct treeNode * readId = root->node->read->id;
+    struct tableNode * var = readId->node->id->symbol;
+    struct value * val = var->value;
     printf("%s: ", var->identifier);
     if(val->type == TYPE_INT){
         int newValue;
@@ -111,33 +163,4 @@ void executeSet(struct treeNode * root){
     if(!setVariableValue(var, executeExpr(expr))){
         printf("Error: variable type mismatch\n");
     }
-}
-
-void execute(struct treeNode *root){
-    if(root==NULL) {return;}
-    switch(root->nodetype) {
-        case READ_NODE:
-                executeRead(root->node->read->id);
-            break;
-        case SET_NODE:
-                executeSet(root);
-            break;
-        case PRINT_NODE:
-                executePrint(root->node->print->expr);
-            break;
-        case IF_NODE:
-                executeIf(root);
-            break;
-        case IFELSE_NODE:
-                executeIfElse(root);
-            break;
-        case WHILE_NODE:
-                executeWhile(root);
-            break;
-        case FOR_NODE:
-                executeFor(root);
-            break;
-        default: printf("ERROR: unknown root type \n"); break;
-    }
-    execute(root->next);
 }

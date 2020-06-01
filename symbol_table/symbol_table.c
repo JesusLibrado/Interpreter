@@ -1,6 +1,6 @@
 #include "symbol_table.h"
 
-void declareVariable(struct tableNode **head_ref, char* id, struct variableValue* variableValue){
+void declareVariable(struct tableNode **head_ref, char* id, struct value* variableValue){
     struct tableNode * new_symbol = (struct tableNode *)malloc(sizeof(struct tableNode));
 
     new_symbol->identifier = id;
@@ -16,7 +16,7 @@ struct tableNode* getVariable(struct tableNode *head, char* id){
     return getVariable(head->next, id);
 }
 
-bool setVariableValue(variable* id, struct variableValue *newValue) {
+bool setVariableValue(variable* id, struct value *newValue) {
     if(typesMatch(id->value, newValue)){
         if(!id){
             return false;
@@ -28,7 +28,7 @@ bool setVariableValue(variable* id, struct variableValue *newValue) {
     return false;
 } 
 
-struct variableValue *getVariableValue(struct tableNode *head, char *id){
+struct value *getVariableValue(struct tableNode *head, char *id){
     struct tableNode *p = getVariable(head, id);
     if(!p){
         printf("Declaration error!: %s was not declared\n", id);
@@ -54,7 +54,7 @@ char *getVariableId(struct tableNode *var){
 }
 
 void printVariable(struct tableNode * var) {
-    struct variableValue * val = var->value;
+    struct value * val = var->value;
     if(val->type == TYPE_INT){
         printf("var %s: %s = %d ", var->identifier, getTypeAsString(val), val->value.int_val);
     }
@@ -65,7 +65,7 @@ void printVariable(struct tableNode * var) {
 
 void displaySymbolTable(struct tableNode *head){
     printf("\tvariable  |\ttype \t|\tvalue\n");
-    struct variableValue *currentVariableValue = NULL;
+    struct value *currentVariableValue = NULL;
     while(head != NULL) {
         currentVariableValue = head->value;
 
