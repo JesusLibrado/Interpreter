@@ -1,7 +1,7 @@
 %{
     #include <stdlib.h>
     #include <string.h>
-    #include "value.h"
+    #include "headers.h"
     #include "parser.tab.h"
 
     int integer_value(int);

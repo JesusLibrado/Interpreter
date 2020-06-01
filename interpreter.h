@@ -1,6 +1,4 @@
 
-#include "value.h"
-#include "symbol_table.h"
 #include "syntax_tree.h"
 
 
@@ -16,7 +14,7 @@ void executeIf(struct treeNode *);
 void executeIfElse(struct treeNode *);
 void executeWhile(struct treeNode *);
 void executeFor(struct treeNode *);
-variable_value * executeExpr(struct treeNode *);
-variable_value * executeTerm(struct treeNode *);
-variable_value * executeFactor(struct treeNode *);
+struct variableValue * executeExpr(struct treeNode *);
+struct variableValue * executeTerm(struct treeNode *);
+struct variableValue * executeFactor(struct treeNode *);
 bool executeExpression(struct treeNode *);

@@ -135,7 +135,7 @@ struct treeNode * getReadNode(struct treeNode * node){
     return getNewNode(READ_NODE, newInstr, NULL);
 }
 
-struct treeNode * getValueNode(variable_value * val){
+struct treeNode * getValueNode(struct variableValue * val){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
 
     newInstr->value = (struct valueNode *)malloc(sizeof(struct valueNode));
@@ -144,7 +144,7 @@ struct treeNode * getValueNode(variable_value * val){
     return getNewNode(VALUE_NODE, newInstr, NULL);
 }
 
-struct treeNode * getIdNode(variable * var){
+struct treeNode * getIdNode(struct tableNode * var){
     instruction * newInstr = (union node *)malloc(sizeof(instruction));
     
     newInstr->id = (struct idNode *)malloc(sizeof(struct idNode));

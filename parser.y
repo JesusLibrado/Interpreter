@@ -2,8 +2,6 @@
 %{
     #include <stdio.h>
     #include <stdbool.h>
-    #include "value.h"
-    #include "symbol_table.h"
     #include "syntax_tree.h"
     #include "interpreter.h"
 
@@ -216,8 +214,7 @@ int main(int argc, char **argv) {
     }
     int parse = yyparse();
     symbol_table = head;
-    syntax_tree = reverseSyntaxTree(tree);
-    execute(syntax_tree);
+    execute(reverseSyntaxTree(tree));
     printf("\n");
     displaySymbolTable(symbol_table);
     //free_table();

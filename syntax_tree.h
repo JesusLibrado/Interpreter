@@ -1,26 +1,25 @@
 #ifndef _TREE_HEADER_
 #define _TREE_HEADER_
 
-#include "value.h"
-#include "symbol_table.h"
+#include "headers.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-variable * symbol_table;
+struct tableNode * symbol_table;
 
 #define IDENTIFIER_NODE 1
-#define VALUE_NODE 2
-#define EXPR_NODE 3
-#define READ_NODE 4
-#define PRINT_NODE 5
-#define SET_NODE 6
-#define IF_NODE 7
-#define IFELSE_NODE 8
-#define WHILE_NODE 9
-#define FOR_NODE 10
-#define TERM_NODE 11
+#define VALUE_NODE      2
+#define EXPR_NODE       3
+#define READ_NODE       4
+#define PRINT_NODE      5
+#define SET_NODE        6
+#define IF_NODE         7
+#define IFELSE_NODE     8
+#define WHILE_NODE      9
+#define FOR_NODE        10
+#define TERM_NODE       11
 #define EXPRESSION_NODE 12
 
 
@@ -33,10 +32,10 @@ struct treeNode {
 
 
 struct idNode {
-    variable * symbol;
+    struct tableNode * symbol;
 }typedef id_node;
 struct valueNode{
-    variable_value * val;
+    struct variableValue * val;
 }typedef value_node;
 struct readNode {
     tree_node * id;
@@ -101,9 +100,6 @@ union node {
 
 
 
-tree_node * syntax_tree;
-
-
 
 struct treeNode * reverseSyntaxTree(struct treeNode *);
 struct treeNode * getNewNode(int, union node *, struct treeNode *);
@@ -116,8 +112,8 @@ struct treeNode * getIfNode(struct treeNode *, struct treeNode *);
 struct treeNode * getWhileNode(struct treeNode *, struct treeNode *);
 struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
-struct treeNode * getValueNode(variable_value *);
-struct treeNode * getIdNode(variable *);
+struct treeNode * getValueNode(struct variableValue *);
+struct treeNode * getIdNode(struct tableNode *);
 struct treeNode * getForNode(
     struct treeNode *,
     struct treeNode *,

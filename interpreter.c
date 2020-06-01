@@ -1,6 +1,6 @@
 #include "interpreter.h"
 
-variable_value * executeFactor(struct treeNode * root) {
+struct variableValue * executeFactor(struct treeNode * root) {
     if(root->nodetype == IDENTIFIER_NODE)
         return root->node->id->symbol->value;
     if(root->nodetype == VALUE_NODE)
@@ -8,7 +8,7 @@ variable_value * executeFactor(struct treeNode * root) {
     return executeExpr(root);
 }
 
-variable_value * executeTerm(struct treeNode * root){
+struct variableValue * executeTerm(struct treeNode * root){
     term_node * current = root->node->term;
     switch (current->operation){
         case MULTIPLICATION_OP:
@@ -23,7 +23,7 @@ variable_value * executeTerm(struct treeNode * root){
     return executeFactor(root);
 }
 
-variable_value * executeExpr(struct treeNode * root){
+struct variableValue * executeExpr(struct treeNode * root){
     expr_node * expr = root->node->expr;
     switch (expr->operation){
         case ADDITION_OP:
@@ -83,8 +83,8 @@ void executePrint(struct treeNode * root){
 }
 
 void executeRead(struct treeNode * root){
-    variable * var = root->node->id->symbol;
-    variable_value * val = var->value;
+    struct tableNode * var = root->node->id->symbol;
+    struct variableValue * val = var->value;
     printf("%s: ", var->identifier);
     if(val->type == TYPE_INT){
         int newValue;
@@ -107,7 +107,7 @@ void executeRead(struct treeNode * root){
 void executeSet(struct treeNode * root){
     id_node * id = root->node->set->id->node->id;
     tree_node * expr = root->node->set->expr;
-    variable * var = id->symbol;
+    struct tableNode * var = id->symbol;
     if(!setVariableValue(var, executeExpr(expr))){
         printf("Error: variable type mismatch\n");
     }
