@@ -1,5 +1,13 @@
 #include "syntax_tree.h"
 
+
+/**
+ * Returns a new basic tree node type, specifying the nodetype received in the params
+ * And setting its next node to null
+ * @param nodetype: int                         Specifies the type of node 
+ * @param instr: union node *                   Pointer to its child branch
+ * @param nextTreeNode: struct treeNode *       Pointer to the next tree node to be read on execution
+ */
 struct treeNode * getNewNode(int type, union node * instr, struct treeNode *nextTreeNode){
     struct treeNode * newTreeNode = (struct treeNode *)malloc(sizeof(struct treeNode));
 
@@ -10,6 +18,13 @@ struct treeNode * getNewNode(int type, union node * instr, struct treeNode *next
     return newTreeNode;
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a WHILE_NODE
+ * And setting its next node to null
+ * @param cond: struct treeNode *       A pointer to the conidition to be evaluated
+ * @param stmt: struct treeNode *       A pointer to the branch to be executed if true
+ */
 struct treeNode * getWhileNode(struct treeNode * cond, struct treeNode * stmt){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -20,6 +35,14 @@ struct treeNode * getWhileNode(struct treeNode * cond, struct treeNode * stmt){
     return getNewNode(WHILE_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to an IFELSE_NODE
+ * And setting its next node to null
+ * @param cond: struct treeNode *           A pointer to the conidition to be evaluated
+ * @param i_stmt: struct treeNode *         A pointer to the branch to be executed if true
+ * @param e_stmt: struct treeNode *         A pointer to the branch to be executed if false
+ */
 struct treeNode * getIfElseNode(struct treeNode * cond, struct treeNode * i_stmt, struct treeNode * e_stmt){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -31,6 +54,16 @@ struct treeNode * getIfElseNode(struct treeNode * cond, struct treeNode * i_stmt
     return getNewNode(IFELSE_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a FOR_NODE
+ * And setting its next node to null
+ * @param var: struct treeNode *            A pointer to an Id type node
+ * @param val: struct treeNode *            A pointer to an Expr type node
+ * @param t: struct treeNode *              A pointer to an Expression type node
+ * @param s: struct treeNode *              A pointer to an Expr type node
+ * @param d: struct treeNode *              A pointer to a basic tree node
+ */
 struct treeNode * getForNode(struct treeNode * var, struct treeNode * val, struct treeNode * t, struct treeNode * s, struct treeNode * d){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -44,6 +77,12 @@ struct treeNode * getForNode(struct treeNode * var, struct treeNode * val, struc
     return getNewNode(FOR_NODE, newInstr, NULL);
 }
 
+/**
+ * Returns a basic tree node type, specifying the nodetype to an IF_NODE
+ * And setting its next node to null
+ * @param cond: struct treeNode *       A pointer to the conidition to be evaluated
+ * @param stmt: struct treeNode *       A pointer to the branch to be executed if true
+ */
 struct treeNode * getIfNode(struct treeNode * cond, struct treeNode * stmt){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -54,6 +93,13 @@ struct treeNode * getIfNode(struct treeNode * cond, struct treeNode * stmt){
     return getNewNode(IF_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a SET_NODE
+ * And setting its next node to null
+ * @param var: struct treeNode *        A pointer to an IdNode type node
+ * @param e: struct treeNode *          A pointer to an Expr type node
+ */
 struct treeNode * getSetNode(struct treeNode * var, struct treeNode * e){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -64,6 +110,15 @@ struct treeNode * getSetNode(struct treeNode * var, struct treeNode * e){
     return getNewNode(SET_NODE, newInstr, NULL);
 
 }
+
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to an EXPR_NODE
+ * And setting its next node to null
+ * @param op: int                    Specifies the operation type
+ * @param e: struct treeNode *       A pointer to an Expr type node
+ * @param t: struct treeNode *       A pointer to a Term type node
+ */
 struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -75,6 +130,14 @@ struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
     return getNewNode(EXPR_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to an EXPRESSION_NODE
+ * And setting its next node to null
+ * @param cond: int                  Specifies the evaluation type
+ * @param l: struct treeNode *       A pointer to an Expr type node
+ * @param r: struct treeNode *       A pointer to an Expr type node
+ */
 struct treeNode * getExpressionNode(int cond, struct treeNode * l, struct treeNode * r){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -85,6 +148,15 @@ struct treeNode * getExpressionNode(int cond, struct treeNode * l, struct treeNo
 
     return getNewNode(EXPRESSION_NODE, newInstr, NULL);
 }
+
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to an TERM_NODE
+ * And setting its next node to null
+ * @param op: int                    Specifies the operation type
+ * @param t: struct treeNode *       A pointer to a Term type node
+ * @param f: struct treeNode *       A pointer to a Factor type node
+ */
 struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -96,6 +168,12 @@ struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
     return getNewNode(TERM_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a PRINT_NODE
+ * And setting its next node to null
+ * @param node: struct treeNode *        A pointer to an ExprNode type node
+ */
 struct treeNode * getPrintNode(struct treeNode * node){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -105,6 +183,12 @@ struct treeNode * getPrintNode(struct treeNode * node){
     return getNewNode(PRINT_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a READ_NODE
+ * And setting its next node to null
+ * @param node: struct treeNode *        A pointer to an IdNode type node
+ */
 struct treeNode * getReadNode(struct treeNode * node){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -114,6 +198,12 @@ struct treeNode * getReadNode(struct treeNode * node){
     return getNewNode(READ_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a VALUE_NODE
+ * And setting its next node to null
+ * @param val: struct value *        A pointer to a value object
+ */
 struct treeNode * getValueNode(struct value * val){
     union node * newInstr = (union node *)malloc(sizeof(union node));
 
@@ -123,6 +213,12 @@ struct treeNode * getValueNode(struct value * val){
     return getNewNode(VALUE_NODE, newInstr, NULL);
 }
 
+
+/**
+ * Returns a basic tree node type, specifying the nodetype to a PRINT_NODE
+ * And setting its next node to null
+ * @param var: struct tableNode *      A pointer to a variable from the symbol table
+ */
 struct treeNode * getIdNode(struct tableNode * var){
     union node * newInstr = (union node *)malloc(sizeof(union node));
     
@@ -131,6 +227,13 @@ struct treeNode * getIdNode(struct tableNode * var){
     return getNewNode(IDENTIFIER_NODE, newInstr, NULL);
 }
 
+
+
+/**
+ * It traverses throuhg the nodes as a normal linked list (moving on to the next node)
+ * For every nodetype, it makes a preorder traversal in its branch
+ * @param root: struct treeNode *        A pointer to any tree node
+ */
 void printSyntaxTree(struct treeNode *root){
     if(root==NULL) {printf("\n"); return;}
     switch(root->nodetype) {
