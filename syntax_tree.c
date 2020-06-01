@@ -228,9 +228,17 @@ struct treeNode * getIdNode(struct tableNode * var){
 }
 
 
+struct treeNode * reverseSyntaxTree(struct treeNode * root){
+    if (root == NULL || root->next == NULL)  return root; 
+    struct treeNode * rest = reverseSyntaxTree(root->next); 
+    root->next->next = root;
+    root->next = NULL; 
+    return rest; 
+}
+
 
 /**
- * It traverses throuhg the nodes as a normal linked list (moving on to the next node)
+ * It traverses through the nodes as a normal linked list (moving on to the next node)
  * For every nodetype, it makes a preorder traversal in its branch
  * @param root: struct treeNode *        A pointer to any tree node
  */
@@ -309,12 +317,4 @@ void printSyntaxTree(struct treeNode *root){
         default: printf("ERROR: unknown root type \n"); break;
     }
     printSyntaxTree(root->next);
-}
-
-struct treeNode * reverseSyntaxTree(struct treeNode * root){
-    if (root == NULL || root->next == NULL)  return root; 
-    struct treeNode * rest = reverseSyntaxTree(root->next); 
-    root->next->next = root;
-    root->next = NULL; 
-    return rest; 
 }

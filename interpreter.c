@@ -1,5 +1,12 @@
 #include "interpreter.h"
 
+
+/**
+ * It traverses through the tree nodes as a normal linked list (moving on to the next node)
+ * It makes a preorder traversal in its branches
+ * It treats each nodetype differently calling their own function
+ * @param root: struct treeNode *        A pointer to any tree node
+ */
 void execute(struct treeNode *root){
     if(root==NULL) {return;}
     switch(root->nodetype) {
@@ -28,6 +35,15 @@ void execute(struct treeNode *root){
     }
     execute(root->next);
 }
+
+
+/**
+ * Returns a value
+ * @see struct value {} at value.h
+ * If its a terminal (identifier, integer or float) it returns the value
+ * If its an expr type, it returns the value of the node
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 struct value * executeFactor(struct treeNode * root) {
     if(root->nodetype == IDENTIFIER_NODE)
         return root->node->id->symbol->value;
@@ -36,6 +52,15 @@ struct value * executeFactor(struct treeNode * root) {
     return executeExpr(root);
 }
 
+
+/**
+ * Returns a value
+ * @see valueOperation() at value.h
+ * If it finds an operation type specification, 
+ *      it returns the result of the operation between the left term and the factor on the right
+ * If it doesn't, it executes the third option (expr) and returns its value
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 struct value * executeTerm(struct treeNode * root){
     term_node * current = root->node->term;
     switch (current->operation){
@@ -59,6 +84,15 @@ struct value * executeTerm(struct treeNode * root){
     return executeFactor(root);
 }
 
+
+/**
+ * Returns a value
+ * @see valueOperation() at value.h
+ * If it finds an operation type specification, 
+ *      it returns the result of the operation between the left expr and the term on the left
+ * If it doesn't, it executes the third option (term) and returns its value
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 struct value * executeExpr(struct treeNode * root){
     expr_node * expr = root->node->expr;
     switch (expr->operation){
@@ -82,6 +116,13 @@ struct value * executeExpr(struct treeNode * root){
     return executeTerm(root);
 }   
 
+
+/**
+ * Returns a boolean
+ * @see valueEvaluation() at value.h
+ * It returns the result of the operation between the expr on the left and the expr on the right
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 bool executeExpression(struct treeNode * root){
     return valueEvaluation(
         executeExpr(root->node->expression->left), 
@@ -90,12 +131,27 @@ bool executeExpression(struct treeNode * root){
     );
 }
 
+
+/**
+ * It uses C if statement, 
+ * The evaluation of the condition is performed by executeExpression(),
+ * Then, if true, its branch is executed as normal tree node
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeIf(struct treeNode * root){
     if(executeExpression(root->node->if_->condition)){
         execute(root->node->if_->statement);
     }
 }
 
+
+/**
+ * It uses C if else statement, 
+ * The evaluation of the condition is performed by executeExpression(),
+ * Then, if true, its branch is executed as normal tree node,
+ * if false, just execute the else branch as a normal tree node
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeIfElse(struct treeNode * root){
     if(executeExpression(root->node->if_else->condition)){
         execute(root->node->if_else->if_statement);
@@ -104,12 +160,30 @@ void executeIfElse(struct treeNode * root){
     }
 }
 
+
+/**
+ * It uses C while statement, 
+ * The evaluation of the condition is performed by executeExpression(),
+ * Then, if true, its branch is executed as normal tree node
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeWhile(struct treeNode * root){
     while(executeExpression(root->node->while_->condition)){
         execute(root->node->while_->statement);
     }
 }
 
+
+/**
+ * It uses C for statement, 
+ * @see getSetNode() at syntax_tree.h
+ * @see setVariableValue() at symbol_tree.h
+ * Create an executable setNode from the for_ node: id and id_value. Pass a Set execution as first parameter.
+ * Then, evaluate the condition executing for_ node: to as a normal Expression statement
+ * Increment its variable by setting the variables value directly into the symbol table
+ * Finally, execute the for_'s branch as a normal tree node 
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeFor(struct treeNode * root){
     struct treeNode * set = getSetNode(
         root->node->for_->id, 
@@ -128,11 +202,24 @@ void executeFor(struct treeNode * root){
     }
 }
 
+
+/**
+ * @see printValue() at value.h 
+ * Executes a normal Expr node and send its value to a special method which will print the value
+ * Depeding on the variable type, the printing format changes
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executePrint(struct treeNode * root){
     printValue(executeExpr(root->node->print->expr));
     printf("\n");
 }
 
+
+/**
+ * @see setVariableValue() at symbol_tree.h
+ * @note If the input doesn't match the variable type, default value will be 0
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeRead(struct treeNode * root){
     struct treeNode * readId = root->node->read->id;
     struct tableNode * var = readId->node->id->symbol;
@@ -156,6 +243,12 @@ void executeRead(struct treeNode * root){
     }
 }
 
+
+/**
+ * @see setVariableValue() at symbol_tree.h
+ * @note If the input doesn't match the variable type, default value will be 0
+ * @param root: struct treeNode *        A pointer to a tree node
+ */
 void executeSet(struct treeNode * root){
     id_node * id = root->node->set->id->node->id;
     struct treeNode * expr = root->node->set->expr;
