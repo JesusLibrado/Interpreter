@@ -27,7 +27,7 @@ struct treeNode {
     int nodetype;
     union node * node;
     struct treeNode * next;
-}typedef tree_node;
+};
 
 
 
@@ -38,49 +38,49 @@ struct valueNode{
     struct variableValue * val;
 }typedef value_node;
 struct readNode {
-    tree_node * id;
+    struct treeNode * id;
 }typedef read_node;
 struct printNode {
-    tree_node * expr;
+    struct treeNode * expr;
 }typedef print_node;
 struct setNode {
-    tree_node * id;
-    tree_node * expr;
+    struct treeNode * id;
+    struct treeNode * expr;
 }typedef set_node;
 struct exprNode {
     int operation;
-    tree_node * expr;
-    tree_node * term;
+    struct treeNode * expr;
+    struct treeNode * term;
 }typedef expr_node;
 struct termNode {
     int operation;
-    tree_node * term;
-    tree_node * factor;
+    struct treeNode * term;
+    struct treeNode * factor;
 }typedef term_node;
 struct expressionNode {
     int condition;
-    tree_node * left;
-    tree_node * right;
+    struct treeNode * left;
+    struct treeNode * right;
 }typedef expression_node;
 struct ifNode {
-    tree_node * condition;
-    tree_node * statement;
+    struct treeNode * condition;
+    struct treeNode * statement;
 }typedef if_node;
 struct ifElseNode{
-    tree_node * condition;
-    tree_node * if_statement;
-    tree_node * else_statement;
+    struct treeNode * condition;
+    struct treeNode * if_statement;
+    struct treeNode * else_statement;
 }typedef if_else_node;
 struct whileNode{
-    tree_node * condition;
-    tree_node * statement;
+    struct treeNode * condition;
+    struct treeNode * statement;
 }typedef while_node;
 struct forNode{
-    tree_node * id;
-    tree_node * id_value;
-    tree_node * to;
-    tree_node * step;
-    tree_node * do_;
+    struct treeNode * id;
+    struct treeNode * id_value;
+    struct treeNode * to;
+    struct treeNode * step;
+    struct treeNode * do_;
 }typedef for_node;
 
 union node {
@@ -96,7 +96,7 @@ union node {
     if_else_node * if_else;
     for_node * for_;
     while_node * while_;
-} typedef instruction;
+};
 
 
 

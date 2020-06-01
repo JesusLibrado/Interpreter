@@ -67,7 +67,7 @@ void executeWhile(struct treeNode * root){
 }
 
 void executeFor(struct treeNode * root){
-    tree_node * set = getSetNode(root->node->for_->id, root->node->for_->id_value);
+    struct treeNode * set = getSetNode(root->node->for_->id, root->node->for_->id_value);
     for(
         executeSet(set); 
         executeExpression(root->node->for_->to);
@@ -106,7 +106,7 @@ void executeRead(struct treeNode * root){
 
 void executeSet(struct treeNode * root){
     id_node * id = root->node->set->id->node->id;
-    tree_node * expr = root->node->set->expr;
+    struct treeNode * expr = root->node->set->expr;
     struct tableNode * var = id->symbol;
     if(!setVariableValue(var, executeExpr(expr))){
         printf("Error: variable type mismatch\n");

@@ -1,7 +1,7 @@
 #include "syntax_tree.h"
 
-struct treeNode * getNewNode(int type, instruction * instr, tree_node *nextTreeNode){
-    struct treeNode * newTreeNode = (struct treeNode *)malloc(sizeof(tree_node));
+struct treeNode * getNewNode(int type, union node * instr, struct treeNode *nextTreeNode){
+    struct treeNode * newTreeNode = (struct treeNode *)malloc(sizeof(struct treeNode));
 
     newTreeNode->nodetype = type;
     newTreeNode->node = instr;
@@ -11,7 +11,7 @@ struct treeNode * getNewNode(int type, instruction * instr, tree_node *nextTreeN
 }
 
 struct treeNode * getWhileNode(struct treeNode * cond, struct treeNode * stmt){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->while_ = (struct whileNode *)malloc(sizeof(struct whileNode));
     newInstr->while_->condition = NULL;
@@ -23,7 +23,7 @@ struct treeNode * getWhileNode(struct treeNode * cond, struct treeNode * stmt){
 }
 
 struct treeNode * getIfElseNode(struct treeNode * cond, struct treeNode * i_stmt, struct treeNode * e_stmt){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->if_else = (struct ifElseNode *)malloc(sizeof(struct ifElseNode));
     newInstr->if_else->condition = NULL;
@@ -37,7 +37,7 @@ struct treeNode * getIfElseNode(struct treeNode * cond, struct treeNode * i_stmt
 }
 
 struct treeNode * getForNode(struct treeNode * var, struct treeNode * var_val, struct treeNode * t, struct treeNode * s, struct treeNode * d){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->for_ = (struct forNode *)malloc(sizeof(struct forNode));
     newInstr->for_->id = NULL;
@@ -55,7 +55,7 @@ struct treeNode * getForNode(struct treeNode * var, struct treeNode * var_val, s
 }
 
 struct treeNode * getIfNode(struct treeNode * cond, struct treeNode * stmt){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->if_ = (struct ifNode *)malloc(sizeof(struct ifNode));
     newInstr->if_->condition = NULL;
@@ -67,19 +67,17 @@ struct treeNode * getIfNode(struct treeNode * cond, struct treeNode * stmt){
 }
 
 struct treeNode * getSetNode(struct treeNode * var, struct treeNode * e){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->set = (struct setNode *)malloc(sizeof(struct setNode));
-    newInstr->set->id = NULL;
     newInstr->set->id = var;
-    newInstr->set->expr = NULL;
     newInstr->set->expr = e;
 
     return getNewNode(SET_NODE, newInstr, NULL);
 
 }
 struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->expr = (struct exprNode *)malloc(sizeof(struct exprNode));
     newInstr->expr->operation = op;
@@ -92,7 +90,7 @@ struct treeNode * getExprNode(int op, struct treeNode * e, struct treeNode * t){
 }
 
 struct treeNode * getExpressionNode(int cond, struct treeNode * l, struct treeNode * r){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->expression = (struct expressionNode *)malloc(sizeof(struct expressionNode));
     newInstr->expression->condition = cond;
@@ -104,7 +102,7 @@ struct treeNode * getExpressionNode(int cond, struct treeNode * l, struct treeNo
     return getNewNode(EXPRESSION_NODE, newInstr, NULL);
 }
 struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->term = (struct termNode *)malloc(sizeof(struct termNode));
     newInstr->term->operation = op;
@@ -117,7 +115,7 @@ struct treeNode * getTermNode(int op, struct treeNode * t, struct treeNode * f){
 }
 
 struct treeNode * getPrintNode(struct treeNode * node){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->print = (struct printNode *)malloc(sizeof(struct printNode));
     newInstr->print->expr = NULL;
@@ -127,7 +125,7 @@ struct treeNode * getPrintNode(struct treeNode * node){
 }
 
 struct treeNode * getReadNode(struct treeNode * node){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->read = (struct readNode *)malloc(sizeof(struct readNode));
     newInstr->read->id = node;
@@ -136,7 +134,7 @@ struct treeNode * getReadNode(struct treeNode * node){
 }
 
 struct treeNode * getValueNode(struct variableValue * val){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
 
     newInstr->value = (struct valueNode *)malloc(sizeof(struct valueNode));
     newInstr->value->val = val;
@@ -145,7 +143,7 @@ struct treeNode * getValueNode(struct variableValue * val){
 }
 
 struct treeNode * getIdNode(struct tableNode * var){
-    instruction * newInstr = (union node *)malloc(sizeof(instruction));
+    union node * newInstr = (union node *)malloc(sizeof(union node));
     
     newInstr->id = (struct idNode *)malloc(sizeof(struct idNode));
     newInstr->id->symbol = var;

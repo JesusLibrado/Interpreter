@@ -2,7 +2,6 @@
 %{
     #include <stdio.h>
     #include <stdbool.h>
-    #include "syntax_tree.h"
     #include "interpreter.h"
 
     extern FILE * yyin;
@@ -13,7 +12,7 @@
     void yyerror(char *);
 
     struct tableNode *head = NULL;
-    struct treeNode *tree = NULL;
+    struct treeNode *root = NULL;
 
     void variable_declaration_error(char *id);
     void variable_input_error(char *id);
@@ -54,7 +53,7 @@
 %%
 
 prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt {
-    tree = $6;
+    root = $6;
 };
 
 opt_decls: 
@@ -214,7 +213,7 @@ int main(int argc, char **argv) {
     }
     int parse = yyparse();
     symbol_table = head;
-    execute(reverseSyntaxTree(tree));
+    execute(reverseSyntaxTree(root));
     printf("\n");
     displaySymbolTable(symbol_table);
     //free_table();
