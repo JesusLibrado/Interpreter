@@ -18,9 +18,16 @@ make eight
 make custom
 ```
 
-## Input
+## Run and print manually
 
-A text file with an example of any code under the [Context Free Grammar](#context-free-grammar) given.
+```bash
+./interpreter tests/<file_name{0...8, custom}>.txt
+```
+If you wish to **print the syntax tree**, enter the next flag at the end of the previous instruction
+
+```bash
+--print-tree
+```
 
 ## Context Free Grammar
 

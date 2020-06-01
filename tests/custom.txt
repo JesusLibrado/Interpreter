@@ -10,5 +10,5 @@ program seis
   for set x 1 to x < 5 step x + 1 do {
     print x;
   }
-  print y;
+  print x + y;
 }

@@ -48,6 +48,12 @@ struct treeNode {
     struct treeNode * next;
 };
 
+/**
+ * 
+ *      GLOBAL syntax_tree, to be set optionally
+ * 
+ */
+struct treeNode * syntax_tree;
 
 /**
  * This is a compound leaf of the tree

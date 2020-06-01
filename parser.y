@@ -92,13 +92,15 @@ assign_stmt:
         if(!variableHasBeenDeclared(head, $2)){
             variable_declaration_error($2);
             YYERROR;
-        } 
-        // if(!setVariableValue(head, $2, $3)){
-        //     variable_input_error($2);
-        //     YYERROR;
-        // }
-        struct treeNode * id_node = getIdNode(getVariable(head, $2));
-        $$ = getSetNode(id_node, $3);
+        }
+        struct tableNode * var = getVariable(head, $2);
+        struct treeNode * expr_node = $3;
+        if(!setVariableValue(var, executeExpr(expr_node))){
+            variable_input_error($2);
+            YYERROR;
+        }
+        struct treeNode * id_node = getIdNode(var);
+        $$ = getSetNode(id_node, expr_node);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
         if(!variableHasBeenDeclared(head, $2)){
@@ -197,7 +199,7 @@ void variable_declaration_error(char *id){
     printf("Error: %s was already declared or was not found\n", id);   
 }
 void variable_input_error(char *id){
-    printf("Error: %s input mismatch\n", id);
+    printf("Error: %s type mismatch\n", id);
 }
 
 void yyerror(char *s) {
@@ -211,9 +213,17 @@ int main(int argc, char **argv) {
     }
     int parse = yyparse();
     symbol_table = head;
-    execute(reverseSyntaxTree(root));
-    printf("\n");
+    syntax_tree = reverseSyntaxTree(root);
+    printf("\n----- Execute Syntax Tree ------\n");
+    execute(syntax_tree);
+    printf("\n\t-------- Final Symbol Table ---------\n");
     displaySymbolTable(symbol_table);
+    if(argv[2]){
+        if(strcmp(argv[2], "--print-tree")==0){
+            printf("\n----- Reduced Syntax Tree ------\n");
+            printSyntaxTree(syntax_tree);
+        }
+    }
     //free_table();
     return 0;
 }
