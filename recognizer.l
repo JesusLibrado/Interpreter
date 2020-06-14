@@ -24,6 +24,7 @@ alpha [a-zA-Z]
 "var"							{return VAR_TOKEN;}
 "int"							{return INT_TOKEN;}
 "float"							{return FLOAT_TOKEN;}
+"fun"                           {return FUN_TOKEN;}
 "read"							{return READ_TOKEN;}
 "print"							{return PRINT_TOKEN;}
 "if"							{return IF_TOKEN;}
@@ -47,7 +48,8 @@ alpha [a-zA-Z]
 "("								{return OPEN_PARENTHESIS;}
 ")"								{return CLOSE_PARENTHESIS;}
 ";"                             {return SEMI_COLON_TOKEN;}	
-":"                             {return COLON_TOKEN;}	
+":"                             {return COLON_TOKEN;}
+","                             {return COMMA_TOKEN;}
 
 {alpha}+                        {return identifier_value(IDENTIFIER);}
 
