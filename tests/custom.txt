@@ -3,16 +3,24 @@ program seis
   var x : int;
   var y : int;
   var z : int
-  fun helloWorld(var t: float, var k: float):float;
+  
   fun function(var t: int, var m: float):int{
     var i: int;
     var j: int;
     var k: float
   }{
-      print t;
+      set i 2;
+      print i;
+      return j + i
+  }
+  fun helloWorld(var l: float, var z: float):float{
+    var m: int
+  }{
+
   }
 }
 {
-  set x 1;
-  print function(x + 1, x);
+  set x 5;
+  set y x + 1;
+  print function(1, 2);
 }

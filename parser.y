@@ -58,9 +58,8 @@
 
 prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls {
         head = $4;
-        symbol_table = head;
+        symbol_table = $4;
     } opt_fun_decls {
-        // displayFunctionTable($6);
         functions = $6;
         function_table = functions;
     } CLOSE_CURLY_BRACKET stmt {
@@ -104,14 +103,15 @@ fun_decls:
 ;
 
 fun_dec:
-    FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt
-    {
+    FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo OPEN_CURLY_BRACKET opt_decls {
+        head = $9;
+    } CLOSE_CURLY_BRACKET stmt {
         struct functionNode * new_function = declareFunction(
             $2,
             $4,
             $9,
             $7,
-            $11
+            reverseSyntaxTree($12)
         );
         $$ = new_function;
     }
@@ -158,11 +158,16 @@ stmt:
 
 assign_stmt:
     SET_TOKEN IDENTIFIER expr SEMI_COLON_TOKEN {
-        if(!variableHasBeenDeclared(head, $2)){
+        struct tableNode * var = NULL;
+        if(variableHasBeenDeclared(head, $2)){
+            var = getVariable(head, $2);
+        }
+        else if(variableHasBeenDeclared(symbol_table, $2)){
+            var = getVariable(symbol_table, $2);
+        } else {
             variable_declaration_error($2);
             YYERROR;
         }
-        struct tableNode * var = getVariable(head, $2);
         struct treeNode * expr_node = $3;
         if(!setVariableValue(var, executeExpr(expr_node))){
             variable_input_error($2);
@@ -239,11 +244,25 @@ term:
 
 factor: 
     OPEN_PARENTHESIS expr CLOSE_PARENTHESIS {$$ = reverseSyntaxTree($2);}
-    | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
+    | IDENTIFIER                            {
+            struct tableNode * var = NULL;
+            if(variableHasBeenDeclared(head, $1)){
+                printf("at head\n");
+                var = getVariable(head, $1);
+            }
+            else if(variableHasBeenDeclared(symbol_table, $1)){
+                printf("at symbol table\n");
+                var = getVariable(symbol_table, $1);
+            } else {
+                variable_declaration_error($1);
+                YYERROR;
+            }
+            $$ = getIdNode(var);
+        }
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
     | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
-        $$ = getFunctionNode(getFunction(functions, $1), $3);
+        $$ = getFunctionNode(getFunction(function_table, $1), $3);
     }
 ; 
 
