@@ -3,7 +3,14 @@ program seis
   var x : int;
   var y : int;
   var z : int
-  fun function(var t: int):int;
+  fun helloWorld(var t: float):float;
+  fun function(var t: int):int{
+    var i: int;
+    var j: int;
+    var k: float
+  }{
+    print t;
+  }
 }
 {
   set x 1;
