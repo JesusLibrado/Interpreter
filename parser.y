@@ -12,6 +12,7 @@
     void yyerror(char *);
 
     struct tableNode *head = NULL;
+    struct functionNode *functions = NULL;
     struct treeNode *root = NULL;
 
     void variable_declaration_error(char *id);
@@ -24,11 +25,11 @@
 /********* DECLARATIONS *********/
 
 %union{
-    int var_type;
-    bool boolean;
-    char *identifier;
-    struct value* value;
-    struct treeNode* node;
+    char * identifier;
+    struct value * value;
+    struct functionNode * _function;
+    struct tableNode * symbol;
+    struct treeNode * node;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -43,7 +44,9 @@
 %token<identifier> IDENTIFIER
 
 %type<value> tipo
-%type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
+%type<_function> opt_fun_decls fun_dec fun_decls
+%type<symbol> opt_decls dec decls param params oparams
+%type<node> stmt assign_stmt stmt_lst cmp_stmt 
 %type<node> if_stmt iter_stmt
 %type<node> factor expr term expression
 
@@ -53,27 +56,34 @@
 
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls opt_fun_decls CLOSE_CURLY_BRACKET stmt {
-    root = $7;
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls {
+        head = $4;
+        symbol_table = head;
+    } opt_fun_decls {
+        displayFunctionTable($6);
+    } CLOSE_CURLY_BRACKET stmt {
+        root = $9;
 };
 
 opt_decls: 
-    decls
-    | %empty
+    decls       {$$ = $1;}
+    | %empty    {$$ = NULL;}
 ;
 
 decls: 
-    dec SEMI_COLON_TOKEN decls 
-    | dec
+    dec SEMI_COLON_TOKEN decls {
+        if(variableHasBeenDeclared($1, getVariableId($3))){
+            variable_declaration_error(getVariableId($3));
+            YYERROR;
+        }
+        $1->next = $3;
+        $$ = $1;
+    }
+    | dec {$$ = $1;}
 ;
 
 dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
-    if(!variableHasBeenDeclared(head, $2)){
-        declareVariable(&head, $2, $4); 
-    }else {
-        variable_declaration_error($2);
-        YYERROR;
-    }
+    $$ = declareVariable($2, $4);
 };
 
 tipo: 
@@ -82,35 +92,60 @@ tipo:
 ;
 
 opt_fun_decls:
-    fun_decls
-    | %empty
+    fun_decls   {$$ = $1;}
+    | %empty    {$$ = NULL;}
 ;
 
 fun_decls:
-    fun_decls fun_dec
-    | fun_dec
+    fun_decls fun_dec   {$2->next = $1; $$ = $2;}
+    | fun_dec           {$$ = $1;}
 ;
 
 fun_dec:
     FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt
-    {}
+    {
+        struct functionNode * new_function = declareFunction(
+            $2,
+            $4,
+            $9,
+            $7,
+            $11
+        );
+        $$ = new_function;
+    }
     | FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo SEMI_COLON_TOKEN
-    {}
+    {
+        struct functionNode * new_function = declareFunction(
+            $2,
+            $4,
+            NULL,
+            $7,
+            NULL
+        );
+        $$ = new_function;
+    }
 ;
 
 oparams:
-    params
-    | %empty
+    params      {$$ = $1;}
+    | %empty    {$$ = NULL;}
 ;
 
 params:
-    param COMMA_TOKEN params
-    | param
+    param COMMA_TOKEN params {
+        if(variableHasBeenDeclared($1, getVariableId($3))){
+            variable_declaration_error(getVariableId($3));
+            YYERROR;
+        }
+        $1->next = $3;
+        $$ = $1;
+    }
+    | param {$$ = $1;}
 ;
 
-param:
-    VAR_TOKEN IDENTIFIER COLON_TOKEN tipo
-;
+param: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
+    $$ = declareVariable($2, $4);
+};
 
 stmt: 
     assign_stmt {$$ = $1;}
@@ -169,8 +204,8 @@ iter_stmt:
 ;
 
 cmp_stmt: 
-    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET { $$ = NULL;}
-    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET { $$ = $2;}
+    OPEN_CURLY_BRACKET CLOSE_CURLY_BRACKET              {$$ = NULL;}
+    | OPEN_CURLY_BRACKET stmt_lst CLOSE_CURLY_BRACKET   {$$ = $2;}
 ;
 
 stmt_lst: 
@@ -257,7 +292,6 @@ int main(int argc, char **argv) {
         return 1;
     }
     int parse = yyparse();
-    symbol_table = head;
     syntax_tree = reverseSyntaxTree(root);
     printf("\n----- Execute Syntax Tree ------\n");
     execute(syntax_tree);

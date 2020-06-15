@@ -1,8 +1,6 @@
 #include "function_table.h"
 
-
-void declareVariabledeclareFunction(
-    struct functionNode ** head_ref, 
+struct functionNode * declareFunction( 
     char * id, 
     struct tableNode * params,
     struct tableNode * scope,
@@ -10,7 +8,7 @@ void declareVariabledeclareFunction(
     struct treeNode * body
 ){
     struct functionNode * new_function = (struct functionNode *)malloc(sizeof(struct functionNode));
-
+    
     new_function->identifier = id;
     new_function->params = NULL;
     new_function->params = params;
@@ -19,26 +17,28 @@ void declareVariabledeclareFunction(
     new_function->returnValue = returnValue;
     new_function->body = NULL;
     new_function->body = body;
-    new_function->next = (*head_ref);
+    new_function->next = NULL;
 
-    (*head_ref) = new_function;
+    return new_function;
 }
 
 void displayFunctionTable(struct functionNode * head){
-    printf("\tfunction  |\ttype \t|\tparams\n");
     struct value *currentFunctionValue = NULL;
     while(head != NULL) {
+        printf("function\t  |\ttype \t\n");
         currentFunctionValue = head->returnValue;
 
         if(currentFunctionValue->type == TYPE_INT){
-            printf("\t%s \t\tint \t", head->identifier);
-            printf(" \t");
+            printf("%s \t\tint \n", head->identifier);
         }
 
         if(currentFunctionValue->type == TYPE_FLOAT) {
-            printf("\t%s \t\tfloat \t", head->identifier);
-            printf(" \t ");
+            printf("%s \t\tfloat \n", head->identifier);
         }
+        printf("****** params\n");
+        displaySymbolTable(head->params);
+        printf("****** local symbol table\n");
+        displaySymbolTable(head->scope);
 
         printf("\n");
         head = head->next;

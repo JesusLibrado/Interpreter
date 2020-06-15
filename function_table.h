@@ -15,8 +15,7 @@ struct functionNode {
 
 void displayFunctionTable(struct functionNode *);
 void printFunction(struct functionNode *);
-void declareFunction(
-    struct functionNode **, 
+struct functionNode * declareFunction(
     char *, 
     struct tableNode *,
     struct tableNode *,

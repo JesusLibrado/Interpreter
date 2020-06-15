@@ -3,12 +3,16 @@ program seis
   var x : int;
   var y : int;
   var z : int
+  fun helloWorld(var t: float):float;
+  fun function(var t: int):int{
+    var i: int;
+    var j: int;
+    var k: float
+  }{
+    print t;
+  }
 }
 {
-  read x;
-  set y x;
-  for set x 1 to x < 5 step x + 1 do {
-    print x;
-  }
-  print x + y;
+  set x 1;
+  print x;
 }
