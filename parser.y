@@ -60,7 +60,9 @@ prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls {
         head = $4;
         symbol_table = head;
     } opt_fun_decls {
-        displayFunctionTable($6);
+        // displayFunctionTable($6);
+        functions = $6;
+        function_table = functions;
     } CLOSE_CURLY_BRACKET stmt {
         root = $9;
 };
@@ -241,6 +243,7 @@ factor:
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
     | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
+        printFunction(getFunction(functions, $1));
         $$ = NULL;
     }
 ; 
@@ -293,6 +296,8 @@ int main(int argc, char **argv) {
     }
     int parse = yyparse();
     syntax_tree = reverseSyntaxTree(root);
+    // printf("\n------- Function Table ---------\n");
+    // displayFunctionTable(function_table);
     printf("\n----- Execute Syntax Tree ------\n");
     execute(syntax_tree);
     printf("\n\t-------- Final Symbol Table ---------\n");

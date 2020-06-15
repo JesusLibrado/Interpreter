@@ -19,6 +19,13 @@ struct tableNode * symbol_table;
 
 /**
  * 
+ *      GLOBAL function_table, to be set before sarting the code execution
+ * 
+ */
+struct functionNode * function_table;
+
+/**
+ * 
  *      GLOBAL nodetypes
  * 
  */

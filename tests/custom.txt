@@ -3,8 +3,8 @@ program seis
   var x : int;
   var y : int;
   var z : int
-  fun helloWorld(var t: float):float;
-  fun function(var t: int):int{
+  fun helloWorld(var t: float, var k: float):float;
+  fun function(var t: int, var m: float):int{
     var i: int;
     var j: int;
     var k: float
@@ -14,5 +14,5 @@ program seis
 }
 {
   set x 1;
-  print x;
+  print function(x);
 }

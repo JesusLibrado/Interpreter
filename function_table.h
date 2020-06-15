@@ -15,6 +15,7 @@ struct functionNode {
 
 void displayFunctionTable(struct functionNode *);
 void printFunction(struct functionNode *);
+void printFunction(struct functionNode *);
 struct functionNode * declareFunction(
     char *, 
     struct tableNode *,
@@ -23,9 +24,9 @@ struct functionNode * declareFunction(
     struct treeNode *
 );
 
-char *getFunctionId(struct functionNode *);
+char * getFunctionId(struct functionNode *);
 
-struct functionNode *getFunction(struct functionNode *, char *);
+struct functionNode * getFunction(struct functionNode *, char *);
 
 bool functionHasBeenDeclared(struct functionNode *, char *);
 
