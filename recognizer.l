@@ -27,6 +27,7 @@ alpha [a-zA-Z]
 "fun"                           {return FUN_TOKEN;}
 "read"							{return READ_TOKEN;}
 "print"							{return PRINT_TOKEN;}
+"return"						{return RETURN_TOKEN;}
 "if"							{return IF_TOKEN;}
 "ifelse"						{return IFELSE_TOKEN;}
 "while"							{return WHILE_TOKEN;}
