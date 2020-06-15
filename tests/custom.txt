@@ -9,7 +9,7 @@ program seis
     var j: int;
     var k: float
   }{
-    print t;
+      print t;
   }
 }
 {

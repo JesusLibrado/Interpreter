@@ -19,6 +19,16 @@ struct treeNode * getNewNode(int type, union node * instr, struct treeNode *next
 }
 
 
+struct treeNode * getFunctionNode(struct functionNode * fun, struct treeNode * attr){
+    union node * newFun = (union node *)malloc(sizeof(union node));
+
+    newFun->fun = (struct funNode *)malloc(sizeof(struct funNode));
+    newFun->fun->function_ = fun;
+    newFun->fun->attributes = attr;
+
+    return getNewNode(FUNCTION_NODE, newFun, NULL); 
+}
+
 /**
  * Returns a basic tree node type, specifying the nodetype to a WHILE_NODE
  * And setting its next node to null
@@ -275,6 +285,11 @@ void printSyntaxTree(struct treeNode *root){
                 printSyntaxTree(root->node->term->term);
                 printf("(-- op --)\n");
                 printSyntaxTree(root->node->term->factor);
+            break;
+        case FUNCTION_NODE:
+                printf("[Fun]----\n");
+                printSyntaxTree(root->node->fun->attributes);
+                printFunction(root->node->fun->function_);
             break;
         case EXPRESSION_NODE:
                 printf("[Expression]----\n");

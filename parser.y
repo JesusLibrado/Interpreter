@@ -184,7 +184,7 @@ assign_stmt:
         $$ = getPrintNode($2);
     }
     | RETURN_TOKEN expr {
-        $$ = NULL;
+        $$ = $2;
     }
 ;
 
@@ -243,13 +243,14 @@ factor:
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
     | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
-        printSyntaxTree($3);
-        printFunction(getFunction(functions, $1));
-        $$ = NULL;
+        $$ = getFunctionNode(getFunction(functions, $1), $3);
     }
 ; 
 
-opt_exprs: expr_lst {$$ = reverseSyntaxTree($1);} | %empty {$$ = NULL;};
+opt_exprs: 
+    expr_lst {$$ = reverseSyntaxTree($1);} 
+    | %empty {$$ = NULL;}
+;
 
 expr_lst: 
     expr_lst COMMA_TOKEN expr   {$3->next = $1; $$ = $3;}
@@ -300,7 +301,8 @@ int main(int argc, char **argv) {
     // printf("\n------- Function Table ---------\n");
     // displayFunctionTable(function_table);
     printf("\n----- Execute Syntax Tree ------\n");
-    execute(syntax_tree);
+    printSyntaxTree(syntax_tree);
+    //execute(syntax_tree);
     printf("\n\t-------- Final Symbol Table ---------\n");
     displaySymbolTable(symbol_table);
     if(argv[2]){
