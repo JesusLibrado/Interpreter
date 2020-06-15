@@ -203,6 +203,16 @@ factor:
     | IDENTIFIER                            {$$ = getIdNode(getVariable(head, $1));}
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
+    | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
+        $$ = NULL;
+    }
+; 
+
+opt_exprs: expr_lst | %empty;
+
+expr_lst: 
+    expr_lst COMMA_TOKEN expr
+    | expr
 ;
 
 expression: 
