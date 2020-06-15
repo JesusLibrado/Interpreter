@@ -48,7 +48,7 @@
 %type<symbol> opt_decls dec decls param params oparams
 %type<node> stmt assign_stmt stmt_lst cmp_stmt 
 %type<node> if_stmt iter_stmt
-%type<node> factor expr term expression
+%type<node> factor expr term expression opt_exprs expr_lst
 
 /********* GRAMMAR RULES *********/
 
@@ -243,16 +243,17 @@ factor:
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
     | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
+        printSyntaxTree($3);
         printFunction(getFunction(functions, $1));
         $$ = NULL;
     }
 ; 
 
-opt_exprs: expr_lst | %empty;
+opt_exprs: expr_lst {$$ = reverseSyntaxTree($1);} | %empty {$$ = NULL;};
 
 expr_lst: 
-    expr_lst COMMA_TOKEN expr
-    | expr
+    expr_lst COMMA_TOKEN expr   {$3->next = $1; $$ = $3;}
+    | expr                      {$$ = $1;}
 ;
 
 expression: 

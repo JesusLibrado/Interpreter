@@ -14,5 +14,5 @@ program seis
 }
 {
   set x 1;
-  print function(x);
+  print function(x + 1, x);
 }

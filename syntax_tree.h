@@ -69,6 +69,7 @@ struct treeNode * syntax_tree;
  */
 struct funNode {
     struct functionNode * fun;
+    struct treeNode * attributes;
 }typedef fun_node;
 
 /**
