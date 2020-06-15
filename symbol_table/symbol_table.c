@@ -1,13 +1,13 @@
 #include "symbol_table.h"
 
-void declareVariable(struct tableNode **head_ref, char* id, struct value* variableValue){
+struct tableNode * declareVariable(char* id, struct value* variableValue){
     struct tableNode * new_symbol = (struct tableNode *)malloc(sizeof(struct tableNode));
 
     new_symbol->identifier = id;
     new_symbol->value = variableValue;
-    new_symbol->next = (*head_ref);
+    new_symbol->next = NULL;
 
-    (*head_ref) = new_symbol;
+    return new_symbol;
 }
 
 struct tableNode* getVariable(struct tableNode *head, char* id){

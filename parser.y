@@ -25,11 +25,10 @@
 /********* DECLARATIONS *********/
 
 %union{
-    int var_type;
-    bool boolean;
     char *identifier;
-    struct value* value;
-    struct treeNode* node;
+    struct tableNode * symbol;
+    struct value * value;
+    struct treeNode * node;
 }
 
 %token PROGRAM_TOKEN READ_TOKEN PRINT_TOKEN
@@ -44,7 +43,8 @@
 %token<identifier> IDENTIFIER
 
 %type<value> tipo
-%type<node> prog stmt assign_stmt stmt_lst cmp_stmt 
+%type<symbol> opt_decls dec decls
+%type<node> stmt assign_stmt stmt_lst cmp_stmt 
 %type<node> if_stmt iter_stmt
 %type<node> factor expr term expression
 
@@ -54,27 +54,34 @@
 
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls opt_fun_decls CLOSE_CURLY_BRACKET stmt {
-    root = $7;
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls {
+    printf("At opt_decls\n");
+    head = $4;
+    symbol_table = head;
+} opt_fun_decls CLOSE_CURLY_BRACKET stmt {
+    printf("At stmt\n"); 
+    root = $8;
 };
 
 opt_decls: 
-    decls
-    | %empty
+    decls       {$$=$1;}
+    | %empty    {$$=NULL;}
 ;
 
 decls: 
-    dec SEMI_COLON_TOKEN decls 
-    | dec
+    dec SEMI_COLON_TOKEN decls {
+        if(variableHasBeenDeclared($1, getVariableId($3))){
+            variable_declaration_error(getVariableId($3));
+            YYERROR;
+        }
+        $1->next = $3;
+        $$ = $1;
+    }
+    | dec {$$ = $1;}
 ;
 
 dec: VAR_TOKEN IDENTIFIER COLON_TOKEN tipo {
-    if(!variableHasBeenDeclared(head, $2)){
-        declareVariable(&head, $2, $4); 
-    }else {
-        variable_declaration_error($2);
-        YYERROR;
-    }
+    $$ = declareVariable($2, $4);
 };
 
 tipo: 
@@ -257,13 +264,12 @@ int main(int argc, char **argv) {
         printf("Failed to open file.\n");
         return 1;
     }
-    head = symbol_table;
     int parse = yyparse();
     syntax_tree = reverseSyntaxTree(root);
     printf("\n----- Execute Syntax Tree ------\n");
     execute(syntax_tree);
     printf("\n\t-------- Final Symbol Table ---------\n");
-    displaySymbolTable(head);
+    displaySymbolTable(symbol_table);
     if(argv[2]){
         if(strcmp(argv[2], "--print-tree")==0){
             printf("\n----- Reduced Syntax Tree ------\n");
