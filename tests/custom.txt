@@ -3,12 +3,9 @@ program seis
   var x : int;
   var y : int;
   var z : int
+  fun function(var t: int):int;
 }
 {
-  read x;
-  set y x;
-  for set x 1 to x < 5 step x + 1 do {
-    print x;
-  }
-  print x + y;
+  set x 1;
+  print x;
 }

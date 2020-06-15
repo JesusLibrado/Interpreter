@@ -10,7 +10,7 @@ void declareVariabledeclareFunction(
     struct treeNode * body
 ){
     struct functionNode * new_function = (struct functionNode *)malloc(sizeof(struct functionNode));
-
+    printf("Heerrreeeee\n");
     new_function->identifier = id;
     new_function->params = NULL;
     new_function->params = params;

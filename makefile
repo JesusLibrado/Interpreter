@@ -33,32 +33,32 @@ one: tests/one.txt
 
 two: tests/two.txt
 	@echo Testing two.txt
-	@ ${run} tests/two.txt
+	@ ./${run} tests/two.txt
 
 three: tests/three.txt
 	@echo Testing three.txt
-	@ ${run} tests/three.txt
+	@ ./${run} tests/three.txt
 
 four: tests/four.txt
 	@echo Testing four.txt
-	@ ${run} tests/four.txt
+	@ ./${run} tests/four.txt
 
 five: tests/five.txt
 	@echo Testing five.txt
-	@ ${run} tests/five.txt
+	@ ./${run} tests/five.txt
 
 six: tests/six.txt
 	@echo Testing six.txt
-	@ ${run} tests/six.txt
+	@ ./${run} tests/six.txt
 
 seven: tests/seven.txt
 	@echo Testing seven.txt
-	@ ${run} tests/seven.txt
+	@ ./${run} tests/seven.txt
 
 eight: tests/eight.txt
 	@echo Testing eight.txt
-	@ ${run} tests/eight.txt
+	@ ./${run} tests/eight.txt
 
 custom: tests/custom.txt
 	@echo Testing custom.txt
-	@ ${run} tests/custom.txt
+	@ ./${run} tests/custom.txt

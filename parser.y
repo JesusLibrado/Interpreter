@@ -12,6 +12,7 @@
     void yyerror(char *);
 
     struct tableNode *head = NULL;
+    struct functionNode *functions = NULL;
     struct treeNode *root = NULL;
 
     void variable_declaration_error(char *id);
@@ -256,13 +257,13 @@ int main(int argc, char **argv) {
         printf("Failed to open file.\n");
         return 1;
     }
+    head = symbol_table;
     int parse = yyparse();
-    symbol_table = head;
     syntax_tree = reverseSyntaxTree(root);
     printf("\n----- Execute Syntax Tree ------\n");
     execute(syntax_tree);
     printf("\n\t-------- Final Symbol Table ---------\n");
-    displaySymbolTable(symbol_table);
+    displaySymbolTable(head);
     if(argv[2]){
         if(strcmp(argv[2], "--print-tree")==0){
             printf("\n----- Reduced Syntax Tree ------\n");
