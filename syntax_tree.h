@@ -56,6 +56,15 @@ struct treeNode {
 struct treeNode * syntax_tree;
 
 /**
+ * This is a function leaf of the tree
+ * It contains a pointer to a Function
+ * @param fun: struct functionNode *    Stores a function declared in the functions table
+ */
+struct funNode {
+    struct functionNode * fun;
+}typedef fun_node;
+
+/**
  * This is a compound leaf of the tree
  * It contains a pointer to an Identifier
  * @param symbol: struct tableNode *    Stores a variable declared in the symbol table
@@ -217,6 +226,7 @@ union node {
     if_else_node * if_else;
     for_node * for_;
     while_node * while_;
+    fun_node * fun;
 };
 
 
@@ -235,6 +245,7 @@ struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(struct value *);
 struct treeNode * getIdNode(struct tableNode *);
+struct treeNode * getFunctionNode(struct functionNode *);
 struct treeNode * getForNode(
     struct treeNode *,
     struct treeNode *,

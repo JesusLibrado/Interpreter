@@ -93,7 +93,9 @@ fun_decls:
 
 fun_dec:
     FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt
+    {}
     | FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo SEMI_COLON_TOKEN
+    {}
 ;
 
 oparams:
@@ -173,7 +175,7 @@ cmp_stmt:
 
 stmt_lst: 
     stmt            {$$ = $1;}
-    | stmt_lst stmt {$2->next = $1;$$ = $2;}
+    | stmt_lst stmt {$2->next = $1; $$ = $2;}
 ;
 
 expr: 
