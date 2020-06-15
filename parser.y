@@ -53,7 +53,7 @@
 
 %%
 
-prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls CLOSE_CURLY_BRACKET stmt {
+prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls opt_fun_decls CLOSE_CURLY_BRACKET stmt {
     root = $6;
 };
 
