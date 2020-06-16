@@ -29,7 +29,7 @@ struct value * execute(struct treeNode *root){
                 return executeWhile(root);
             break;
         case FOR_NODE:
-                return executeFor(root);
+                executeFor(root);
             break;
         case RETURN_NODE:
                 return executeReturn(root);
@@ -147,6 +147,7 @@ struct value * executeFunction(struct treeNode * root){
         params = params->next;
     }
     struct value * toReturn = execute(_fun->function_->body);
+    displaySymbolTable(_fun->function_->scope);
     if(typesMatch(_fun->function_->returnValue, toReturn)){
         return toReturn;
     }
@@ -221,17 +222,26 @@ struct value * executeFor(struct treeNode * root){
         root->node->for_->id_value
     );
     struct tableNode * var = root->node->for_->id->node->id->symbol;
+    struct value * toReturn = NULL;
     for(
         executeSet(set); 
-        executeExpression(root->node->for_->to);
+        valueEvaluation(
+            executeExpr(root->node->for_->id), 
+            executeExpr(root->node->for_->to), 
+            LTE_OP
+        );
         setVariableValue(
-            var, 
-            executeExpr(root->node->for_->step)
+            var,
+            valueOperation(
+                var->value, 
+                executeExpr(root->node->for_->step),
+                ADDITION_OP
+            )
         )
     ){
-        return execute(root->node->for_->do_);
+        toReturn = execute(root->node->for_->do_);
     }
-    return getInteger(0);
+    return toReturn;
 }
 
 

@@ -186,18 +186,24 @@ assign_stmt:
         $$ = getSetNode(id_node, expr_node);
     }
     | READ_TOKEN IDENTIFIER SEMI_COLON_TOKEN {
-        if(!variableHasBeenDeclared(head, $2)){
-            variable_input_error($2);
+        struct tableNode * var = NULL;
+        if(variableHasBeenDeclared(head, $2)){
+            var = getVariable(head, $2);
+        }
+        else if(variableHasBeenDeclared(symbol_table, $2)){
+            var = getVariable(symbol_table, $2);
+        } else {
+            variable_declaration_error($2);
             YYERROR;
         }
-        struct treeNode * id_node = getIdNode(getVariable(head, $2));
+        struct treeNode * id_node = getIdNode(var);
         $$ = getReadNode(id_node);
         
     }
     | PRINT_TOKEN expr SEMI_COLON_TOKEN {
         $$ = getPrintNode($2);
     }
-    | RETURN_TOKEN expr {
+    | RETURN_TOKEN expr SEMI_COLON_TOKEN{
         $$ = getReturnNode($2);
     }
 ;
@@ -213,8 +219,18 @@ if_stmt:
 
 iter_stmt: 
     WHILE_TOKEN OPEN_PARENTHESIS expression CLOSE_PARENTHESIS stmt { $$ = getWhileNode($3, $5); }
-    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expression STEP_TOKEN expr DO_TOKEN stmt { 
-            struct treeNode * id_node = getIdNode(getVariable(head, $3));
+    | FOR_TOKEN SET_TOKEN IDENTIFIER expr TO_TOKEN expr STEP_TOKEN expr DO_TOKEN stmt { 
+            struct tableNode * var = NULL;
+            if(variableHasBeenDeclared(head, $3)){
+                var = getVariable(head, $3);
+            }
+            else if(variableHasBeenDeclared(symbol_table, $3)){
+                var = getVariable(symbol_table, $3);
+            } else {
+                variable_declaration_error($3);
+                YYERROR;
+            }
+            struct treeNode * id_node = getIdNode(var);
             $$ = getForNode(id_node, $4, $6, $8, $10); 
         }
 ;
