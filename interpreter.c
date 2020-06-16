@@ -7,8 +7,8 @@
  * It treats each nodetype differently calling their own function
  * @param root: struct treeNode *        A pointer to any tree node
  */
-void execute(struct treeNode *root){
-    if(root==NULL) {return;}
+struct value * execute(struct treeNode *root){
+    if(root==NULL) {return getInteger(0);}
     switch(root->nodetype) {
         case READ_NODE:
                 executeRead(root);
@@ -20,20 +20,23 @@ void execute(struct treeNode *root){
                 executePrint(root);
             break;
         case IF_NODE:
-                executeIf(root);
+                return executeIf(root);
             break;
         case IFELSE_NODE:
-                executeIfElse(root);
+                return executeIfElse(root);
             break;
         case WHILE_NODE:
-                executeWhile(root);
+                return executeWhile(root);
             break;
         case FOR_NODE:
-                executeFor(root);
+                return executeFor(root);
+            break;
+        case RETURN_NODE:
+                return executeReturn(root);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }
-    execute(root->next);
+    return execute(root->next);
 }
 
 
@@ -143,11 +146,18 @@ struct value * executeFunction(struct treeNode * root){
         _attr = _attr->next;
         params = params->next;
     }
-    displaySymbolTable(_fun->function_->scope);
+    struct value * toReturn = execute(_fun->function_->body);
+    if(typesMatch(_fun->function_->returnValue, toReturn)){
+        return toReturn;
+    }
     if(_fun->function_->returnValue->type == TYPE_INT)
         return getInteger(0);
     if(_fun->function_->returnValue->type == TYPE_FLOAT)
         return getFloat(0.0);
+}
+
+struct value * executeReturn(struct treeNode * root){
+    return executeExpr(root->node->return_->expr);
 }
 
 
@@ -157,10 +167,11 @@ struct value * executeFunction(struct treeNode * root){
  * Then, if true, its branch is executed as normal tree node
  * @param root: struct treeNode *        A pointer to a tree node
  */
-void executeIf(struct treeNode * root){
+struct value * executeIf(struct treeNode * root){
     if(executeExpression(root->node->if_->condition)){
-        execute(root->node->if_->statement);
+        return execute(root->node->if_->statement);
     }
+    return getInteger(0);
 }
 
 
@@ -171,11 +182,11 @@ void executeIf(struct treeNode * root){
  * if false, just execute the else branch as a normal tree node
  * @param root: struct treeNode *        A pointer to a tree node
  */
-void executeIfElse(struct treeNode * root){
+struct value * executeIfElse(struct treeNode * root){
     if(executeExpression(root->node->if_else->condition)){
-        execute(root->node->if_else->if_statement);
+        return execute(root->node->if_else->if_statement);
     } else {
-        execute(root->node->if_else->else_statement);
+        return execute(root->node->if_else->else_statement);
     }
 }
 
@@ -186,10 +197,11 @@ void executeIfElse(struct treeNode * root){
  * Then, if true, its branch is executed as normal tree node
  * @param root: struct treeNode *        A pointer to a tree node
  */
-void executeWhile(struct treeNode * root){
+struct value * executeWhile(struct treeNode * root){
     while(executeExpression(root->node->while_->condition)){
-        execute(root->node->while_->statement);
+        return execute(root->node->while_->statement);
     }
+    return getInteger(0);
 }
 
 
@@ -203,7 +215,7 @@ void executeWhile(struct treeNode * root){
  * Finally, execute the for_'s branch as a normal tree node 
  * @param root: struct treeNode *        A pointer to a tree node
  */
-void executeFor(struct treeNode * root){
+struct value * executeFor(struct treeNode * root){
     struct treeNode * set = getSetNode(
         root->node->for_->id, 
         root->node->for_->id_value
@@ -217,8 +229,9 @@ void executeFor(struct treeNode * root){
             executeExpr(root->node->for_->step)
         )
     ){
-        execute(root->node->for_->do_);
+        return execute(root->node->for_->do_);
     }
+    return getInteger(0);
 }
 
 
