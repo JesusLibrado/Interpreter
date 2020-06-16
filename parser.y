@@ -104,6 +104,7 @@ fun_decls:
 
 fun_dec:
     FUN_TOKEN IDENTIFIER OPEN_PARENTHESIS oparams CLOSE_PARENTHESIS COLON_TOKEN tipo OPEN_CURLY_BRACKET opt_decls {
+        mergeTables($4, $9);
         head = $9;
     } CLOSE_CURLY_BRACKET stmt {
         struct functionNode * new_function = declareFunction(
@@ -247,11 +248,9 @@ factor:
     | IDENTIFIER                            {
             struct tableNode * var = NULL;
             if(variableHasBeenDeclared(head, $1)){
-                printf("at head\n");
                 var = getVariable(head, $1);
             }
             else if(variableHasBeenDeclared(symbol_table, $1)){
-                printf("at symbol table\n");
                 var = getVariable(symbol_table, $1);
             } else {
                 variable_declaration_error($1);
