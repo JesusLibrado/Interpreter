@@ -19,6 +19,13 @@ struct tableNode * symbol_table;
 
 /**
  * 
+ *      GLOBAL function_table, to be set before sarting the code execution
+ * 
+ */
+struct functionNode * function_table;
+
+/**
+ * 
  *      GLOBAL nodetypes
  * 
  */
@@ -34,6 +41,8 @@ struct tableNode * symbol_table;
 #define FOR_NODE        10
 #define TERM_NODE       11
 #define EXPRESSION_NODE 12
+#define FUNCTION_NODE   13
+#define RETURN_NODE     14
 
 
 /**
@@ -54,6 +63,17 @@ struct treeNode {
  * 
  */
 struct treeNode * syntax_tree;
+
+/**
+ * This is a function leaf of the tree
+ * It contains a pointer to a Function
+ * @param fun: struct functionNode *    Stores a function declared in the functions table
+ * @param attributes: struct treeNode *    Stores a function declared in the functions table
+ */
+struct funNode {
+    struct functionNode * function_;
+    struct treeNode * attributes;
+}typedef fun_node;
 
 /**
  * This is a compound leaf of the tree
@@ -196,6 +216,13 @@ struct forNode{
     struct treeNode * do_;
 }typedef for_node;
 
+/**
+ * This is a RETRUN tree node
+ * @param expr: struct treeNode *       A pointer to the expr branch to be returned
+ */
+struct returnNode {
+    struct treeNode * expr;
+}typedef return_node;
 
 /**
  * This is the branch contained inside each tree node
@@ -217,6 +244,8 @@ union node {
     if_else_node * if_else;
     for_node * for_;
     while_node * while_;
+    fun_node * fun;
+    return_node * return_;
 };
 
 
@@ -235,6 +264,8 @@ struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(struct value *);
 struct treeNode * getIdNode(struct tableNode *);
+struct treeNode * getReturnNode(struct treeNode *);
+struct treeNode * getFunctionNode(struct functionNode *, struct treeNode *);
 struct treeNode * getForNode(
     struct treeNode *,
     struct treeNode *,

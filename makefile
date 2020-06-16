@@ -4,7 +4,7 @@ CC = gcc
 FLEX = lex
 BISON = bison
 
-C_FILES = parser.tab.c lex.yy.c symbol_table//value.c symbol_table/symbol_table.c syntax_tree.c interpreter.c
+C_FILES = parser.tab.c lex.yy.c tables/value.c tables/symbol_table.c tables/function_table.c syntax_tree.c interpreter.c
 
 run := interpreter
 
@@ -33,32 +33,44 @@ one: tests/one.txt
 
 two: tests/two.txt
 	@echo Testing two.txt
-	@ ${run} tests/two.txt
+	@ ./${run} tests/two.txt
 
 three: tests/three.txt
 	@echo Testing three.txt
-	@ ${run} tests/three.txt
+	@ ./${run} tests/three.txt
 
 four: tests/four.txt
 	@echo Testing four.txt
-	@ ${run} tests/four.txt
+	@ ./${run} tests/four.txt
 
 five: tests/five.txt
 	@echo Testing five.txt
-	@ ${run} tests/five.txt
+	@ ./${run} tests/five.txt
 
 six: tests/six.txt
 	@echo Testing six.txt
-	@ ${run} tests/six.txt
+	@ ./${run} tests/six.txt
 
 seven: tests/seven.txt
 	@echo Testing seven.txt
-	@ ${run} tests/seven.txt
+	@ ./${run} tests/seven.txt
 
 eight: tests/eight.txt
 	@echo Testing eight.txt
-	@ ${run} tests/eight.txt
+	@ ./${run} tests/eight.txt
+
+ten: tests/ten.txt
+	@echo Testing ten.txt
+	@ ./${run} tests/ten.txt
+
+eleven: tests/eleven.txt
+	@echo Testing eleven.txt
+	@ ./${run} tests/eleven.txt
+
+twelve: tests/twelve.txt
+	@echo Testing twelve.txt
+	@ ./${run} tests/twelve.txt
 
 custom: tests/custom.txt
 	@echo Testing custom.txt
-	@ ${run} tests/custom.txt
+	@ ./${run} tests/custom.txt

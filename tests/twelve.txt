@@ -10,10 +10,10 @@ program once
       ifelse (x < 0) return 0 - 1;
       {
         ifelse (x <= 1) return 1;
-	      {
-	        for set i 1 to x step 1 do
-	      set r r * i;
-	    return r;
+	{
+	  for set i 1 to x step 1 do
+	    set r r * i;
+	  return r;
 	}
       }
     }

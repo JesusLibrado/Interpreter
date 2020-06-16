@@ -1,8 +1,13 @@
 # Interpreter
 
-Homework #4 and #5 for Compilers Design course. Given a [Context Free grammar](#context-free-grammar) program an Intepreter which implements a symbol table and a reduced syntax tree.
+Final project for for Compilers Design course, encompasing homeworks #4, #5 and #6.
+Given a [Context Free grammar](#context-free-grammar) program an Intepreter which
+implements all required symbol tables, a reduced syntax tree
+and finally executes the instructions in said tree.
 
-## Compile
+## Compilation
+
+For convenience, the project may be compiled with GNU make. Just run the command:
 
 ```bash
 make
@@ -10,19 +15,25 @@ make
 
 ## Execute
 
+The makefile also defines commands to automatically run tests with the files in
+the `tests` directory:
+
 ```bash
 make one
 make two
 ...
-make eight
+make twelve
 make custom
 ```
 
 ## Run and print manually
 
+The executable may be run manually on a given text file containing source code:
+
 ```bash
-./interpreter tests/<file_name{0...8, custom}>.txt
+./interpreter tests/<file_name>.txt
 ```
+
 If you wish to **print the syntax tree**, enter the next flag at the end of the previous instruction
 
 ```bash
@@ -31,7 +42,10 @@ If you wish to **print the syntax tree**, enter the next flag at the end of the 
 
 ## Context Free Grammar
 
-![](cfg.png)
+![](cfg1.png)
+
+
+![](cfg2.png)
 
 ## Clean folder
 

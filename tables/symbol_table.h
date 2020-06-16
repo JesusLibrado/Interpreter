@@ -14,13 +14,14 @@ void displaySymbolTable(struct tableNode *);
 void freeSymbolTable(struct tableNode **);
 void printVariable(struct tableNode *);
 
-void declareVariable(struct tableNode **, char *, struct value*);
+struct tableNode * declareVariable(char *, struct value*);
 bool setVariableValue(struct tableNode *, struct value*);
 
 char *getVariableId(struct tableNode *);
 
 struct value *getVariableValue(struct tableNode *, char *);
 struct tableNode *getVariable(struct tableNode *, char *);
+void mergeTables(struct tableNode *, struct tableNode *);
 
 bool variableHasBeenDeclared(struct tableNode *, char *);
 bool variableHasValueAssigned(struct tableNode *, char *);

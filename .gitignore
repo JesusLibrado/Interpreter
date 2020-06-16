@@ -4,5 +4,9 @@ parser.tab.c
 parser.tab.h
 parser.output
 parser.o
+intepreter.output
+intepreter.o
+interpreter
+interpreter.out
 
 .vscode
