@@ -1,29 +1,25 @@
-program seis
+program once
 {
-  var x : int;
-  var y : int;
-  var z : int
-  
-  fun function(var t: int, var m: float):int{
-    var i: int;
-    var j: int;
-    var k: float
-  }{
-      set i 2;
-      set k 2.0;
-      print t;
-      return i + t
-  }
-  fun helloWorld(var l: float, var z: float):float{
-    var m: int
-  }{
+   var x : int
 
+   fun factorial (var x: int) : int
+   {var i : int;
+    var r : int }
+    {
+      set r 1;
+      ifelse (x < 0) return 0 - 1;
+      {
+        ifelse (x <= 1) return 1;
+	      {
+	        for set i 1 to x step 1 do
+	      set r r * i;
+	    return r;
+	}
+      }
+    }
   }
-}
+
 {
-  set x 5;
-  set y x + 1;
-  print function(1, 2);
-  set z 12;
-  print z;
+  read x;
+  print factorial(x);
 }
