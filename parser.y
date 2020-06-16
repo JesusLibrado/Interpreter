@@ -98,7 +98,14 @@ opt_fun_decls:
 ;
 
 fun_decls:
-    fun_decls fun_dec   {$2->next = $1; $$ = $2;}
+    fun_decls fun_dec   {
+            if(functionHasBeenDeclared($1, getFunctionId($2))){
+                variable_declaration_error(getFunctionId($2));
+                YYERROR;
+            }
+            $2->next = $1; 
+            $$ = $2;
+        }
     | fun_dec           {$$ = $1;}
 ;
 
@@ -261,6 +268,10 @@ factor:
     | INTEGER                               {$$ = getValueNode($1);}
     | FLOAT                                 {$$ = getValueNode($1);}
     | IDENTIFIER OPEN_PARENTHESIS opt_exprs CLOSE_PARENTHESIS {
+        if(!functionHasBeenDeclared(function_table, $1)){
+            variable_declaration_error($1);
+            YYERROR;
+        }
         $$ = getFunctionNode(getFunction(function_table, $1), $3);
     }
 ; 
