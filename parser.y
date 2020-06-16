@@ -331,8 +331,7 @@ int main(int argc, char **argv) {
     // printf("\n------- Function Table ---------\n");
     // displayFunctionTable(function_table);
     printf("\n----- Execute Syntax Tree ------\n");
-    printSyntaxTree(syntax_tree);
-    //execute(syntax_tree);
+    execute(syntax_tree);
     printf("\n\t-------- Final Symbol Table ---------\n");
     displaySymbolTable(symbol_table);
     if(argv[2]){

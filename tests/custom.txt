@@ -2,28 +2,27 @@ program seis
 {
   var x : int;
   var y : int;
-  var z : int
+  var z : float
   
-  fun function(var t: int, var m: float):int{
-    var i: int;
+  fun function(var t: int, var m: int):int{
+    var i: int
+  }{
+      set i 10;
+      return i + t
+  }
+  fun helloWorld(var z: float):float{
+    var x: int;
     var j: int;
     var k: float
   }{
-      set i 2;
-      set k 2.0;
-      print t;
-      return i + t
-  }
-  fun helloWorld(var l: float, var z: float):float{
-    var m: int
-  }{
-
+    set x 4000;
+    return x + z
   }
 }
 {
   set x 5;
   set y x + 1;
-  print function(1, 2);
-  set z 12;
-  print z;
+  print function(x, y);
+  set z 12.0;
+  print helloWorld(z);
 }

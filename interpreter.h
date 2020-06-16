@@ -15,4 +15,5 @@ void executeFor(struct treeNode *);
 struct value * executeExpr(struct treeNode *);
 struct value * executeTerm(struct treeNode *);
 struct value * executeFactor(struct treeNode *);
+struct value * executeFunction(struct treeNode *);
 bool executeExpression(struct treeNode *);

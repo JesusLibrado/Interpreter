@@ -45,6 +45,8 @@ void execute(struct treeNode *root){
  * @param root: struct treeNode *        A pointer to a tree node
  */
 struct value * executeFactor(struct treeNode * root) {
+    if(root->nodetype == FUNCTION_NODE)
+        return executeFunction(root);
     if(root->nodetype == IDENTIFIER_NODE)
         return root->node->id->symbol->value;
     if(root->nodetype == VALUE_NODE)
@@ -129,6 +131,23 @@ bool executeExpression(struct treeNode * root){
         executeExpr(root->node->expression->right), 
         root->node->expression->condition
     );
+}
+
+struct value * executeFunction(struct treeNode * root){
+    struct funNode * _fun = root->node->fun; 
+    struct tableNode * params = _fun->function_->params;
+    struct treeNode * _attr = _fun->attributes;
+    while(params != NULL){
+        if(!setVariableValue(params, executeExpr(_attr)))
+            printf("Error: params type mismatch. Setting to default value.\n");
+        _attr = _attr->next;
+        params = params->next;
+    }
+    displaySymbolTable(_fun->function_->scope);
+    if(_fun->function_->returnValue->type == TYPE_INT)
+        return getInteger(0);
+    if(_fun->function_->returnValue->type == TYPE_FLOAT)
+        return getFloat(0.0);
 }
 
 
