@@ -197,7 +197,7 @@ assign_stmt:
         $$ = getPrintNode($2);
     }
     | RETURN_TOKEN expr {
-        $$ = $2;
+        $$ = getReturnNode($2);
     }
 ;
 

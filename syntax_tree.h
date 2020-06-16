@@ -42,6 +42,7 @@ struct functionNode * function_table;
 #define TERM_NODE       11
 #define EXPRESSION_NODE 12
 #define FUNCTION_NODE   13
+#define RETURN_NODE     14
 
 
 /**
@@ -215,6 +216,13 @@ struct forNode{
     struct treeNode * do_;
 }typedef for_node;
 
+/**
+ * This is a RETRUN tree node
+ * @param expr: struct treeNode *       A pointer to the expr branch to be returned
+ */
+struct returnNode {
+    struct treeNode * expr;
+}typedef return_node;
 
 /**
  * This is the branch contained inside each tree node
@@ -237,6 +245,7 @@ union node {
     for_node * for_;
     while_node * while_;
     fun_node * fun;
+    return_node * return_;
 };
 
 
@@ -255,6 +264,7 @@ struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(struct value *);
 struct treeNode * getIdNode(struct tableNode *);
+struct treeNode * getReturnNode(struct treeNode *);
 struct treeNode * getFunctionNode(struct functionNode *, struct treeNode *);
 struct treeNode * getForNode(
     struct treeNode *,

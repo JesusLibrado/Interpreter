@@ -246,6 +246,19 @@ struct treeNode * reverseSyntaxTree(struct treeNode * root){
     return rest; 
 }
 
+/**
+ * Returns a basic tree node type, specifying the nodetype to a RETURN_NODE
+ * And setting its next node to null
+ * @param node: struct treeNode *        A pointer to an ExprNode type node
+ */
+struct treeNode * getReturnNode(struct treeNode * node){
+    union node * newInstr = (union node *)malloc(sizeof(union node));
+    
+    newInstr->return_ = (struct returnNode *)malloc(sizeof(struct returnNode));
+    newInstr->return_->expr = node;
+
+    return getNewNode(RETURN_NODE, newInstr, NULL);
+}
 
 /**
  * It traverses through the nodes as a normal linked list (moving on to the next node)
@@ -328,6 +341,10 @@ void printSyntaxTree(struct treeNode *root){
                 printSyntaxTree(root->node->for_->step);
                 printf("(-- do --)\n");
                 printSyntaxTree(root->node->for_->do_);
+            break;
+        case RETURN_NODE:
+                printf("[Return]----\n");
+                printSyntaxTree(root->node->return_->expr);
             break;
         default: printf("ERROR: unknown root type \n"); break;
     }
