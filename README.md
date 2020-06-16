@@ -31,7 +31,10 @@ If you wish to **print the syntax tree**, enter the next flag at the end of the 
 
 ## Context Free Grammar
 
-![](cfg.png)
+![](cfg1.png)
+
+
+![](cfg2.png)
 
 ## Clean folder
 
