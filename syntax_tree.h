@@ -264,6 +264,7 @@ struct treeNode * getReadNode(struct treeNode *);
 struct treeNode * getPrintNode(struct treeNode *);
 struct treeNode * getValueNode(struct value *);
 struct treeNode * getIdNode(struct tableNode *);
+struct treeNode * getReturnNode(struct treeNode *);
 struct treeNode * getFunctionNode(struct functionNode *, struct treeNode *);
 struct treeNode * getForNode(
     struct treeNode *,
@@ -272,7 +273,6 @@ struct treeNode * getForNode(
     struct treeNode *,
     struct treeNode *
 );
-struct treeNode * getReturnNode(struct treeNode *);
 
 void printSyntaxTree(struct treeNode *);
 

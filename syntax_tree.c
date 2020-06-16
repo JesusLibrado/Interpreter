@@ -253,9 +253,9 @@ struct treeNode * reverseSyntaxTree(struct treeNode * root){
  */
 struct treeNode * getReturnNode(struct treeNode * node){
     union node * newInstr = (union node *)malloc(sizeof(union node));
-
+    
     newInstr->return_ = (struct returnNode *)malloc(sizeof(struct returnNode));
-    newInstr->print->expr = node;
+    newInstr->return_->expr = node;
 
     return getNewNode(RETURN_NODE, newInstr, NULL);
 }
