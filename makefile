@@ -59,6 +59,18 @@ eight: tests/eight.txt
 	@echo Testing eight.txt
 	@ ./${run} tests/eight.txt
 
+ten: tests/ten.txt
+	@echo Testing ten.txt
+	@ ./${run} tests/ten.txt
+
+eleven: tests/eleven.txt
+	@echo Testing eleven.txt
+	@ ./${run} tests/eleven.txt
+
+twelve: tests/twelve.txt
+	@echo Testing twelve.txt
+	@ ./${run} tests/twelve.txt
+
 custom: tests/custom.txt
 	@echo Testing custom.txt
 	@ ./${run} tests/custom.txt
