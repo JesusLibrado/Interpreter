@@ -342,6 +342,10 @@ void printSyntaxTree(struct treeNode *root){
                 printf("(-- do --)\n");
                 printSyntaxTree(root->node->for_->do_);
             break;
+        case RETURN_NODE:
+                printf("[Return]----\n");
+                printSyntaxTree(root->node->return_->expr);
+            break;
         default: printf("ERROR: unknown root type \n"); break;
     }
     printSyntaxTree(root->next);
