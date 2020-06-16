@@ -13,14 +13,6 @@ For convenience, the project may be compiled with GNU make. Just run the command
 make
 ```
 
-To compile manually, one may run the following commands:
-
-```bash
- lex -l recognizer.l
- bison -dv parser.y
- gcc -o interpreter function_table.c parser.tab.c lex.yy.c symbol_table/value.c symbol_table/symbol_table.c syntax_tree.c interpreter.c -lfl
-```
-
 ## Execute
 
 The makefile also defines commands to automatically run tests with the files in

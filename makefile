@@ -4,7 +4,7 @@ CC = gcc
 FLEX = lex
 BISON = bison
 
-C_FILES = function_table.c parser.tab.c lex.yy.c symbol_table/value.c symbol_table/symbol_table.c syntax_tree.c interpreter.c
+C_FILES = parser.tab.c lex.yy.c tables/value.c tables/symbol_table.c tables/function_table.c syntax_tree.c interpreter.c
 
 run := interpreter
 

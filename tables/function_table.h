@@ -2,7 +2,7 @@
 #define _FUNCTIONS_HEADER_
 
 #include <stdlib.h>
-#include "syntax_tree.h"
+#include "../syntax_tree.h"
 
 struct functionNode {
     char * identifier;
