@@ -10,8 +10,9 @@ program seis
     var k: float
   }{
       set i 2;
+      set k 2.0;
       print t;
-      return j + t
+      return i + t
   }
   fun helloWorld(var l: float, var z: float):float{
     var m: int
@@ -23,4 +24,6 @@ program seis
   set x 5;
   set y x + 1;
   print function(1, 2);
+  set z 12;
+  print z;
 }

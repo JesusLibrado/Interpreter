@@ -62,6 +62,7 @@ prog: PROGRAM_TOKEN IDENTIFIER OPEN_CURLY_BRACKET opt_decls {
     } opt_fun_decls {
         functions = $6;
         function_table = functions;
+        head = NULL;
     } CLOSE_CURLY_BRACKET stmt {
         root = $9;
 };
