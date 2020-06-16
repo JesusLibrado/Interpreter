@@ -29,6 +29,12 @@ struct functionNode * declareFunction(
     return new_function;
 }
 
+bool functionHasBeenDeclared(struct functionNode * head, char * id){
+    if(head == NULL) return false;
+    if(strcmp(head->identifier, id) == 0) return true;
+    return getFunction(head->next, id);
+}
+
 void printFunction(struct functionNode * head){
     printf("%s(", head->identifier);
     struct tableNode * param_p = head->params;

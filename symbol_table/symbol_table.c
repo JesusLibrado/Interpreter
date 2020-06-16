@@ -90,3 +90,11 @@ void freeSymbolTable(struct tableNode **head){
         (*head) = (*head)->next;
     }
 }
+
+void mergeTables(struct tableNode *head, struct tableNode *tail){
+    struct tableNode * newTable = tail;
+    while(newTable->next != NULL){
+        newTable = newTable->next;
+    }
+    newTable->next = head;
+}
